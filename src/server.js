@@ -1,11 +1,6 @@
 
 const express = require('express');
 const fs = require('fs');
-
-//-------------------------------------------------------
-// logic
-//-------------------------------------------------------
-
 const app = express();
 
 const renderView = dataView => /*html*/`
@@ -24,37 +19,40 @@ const renderView = dataView => /*html*/`
 
 `;
 
-app.use('/assets' , express.static('./src/assets'));
-
-//-------------------------------------------------------
-// data
-//-------------------------------------------------------
+app.use('/assets', express.static('./src/assets'));
 
 const title = 'Koyn UI';
 const port = 5500;
+
+const viewMetaData = {
+    favicon: {
+        type: 'image/png',
+        path: '/assets/underpost.png'
+    },
+    lang: 'en',
+    charset: 'utf-8',
+    dir: 'ltr',
+    router: './src/client.js'
+};
+
 const views = [
     {
         path: '/',
-        title: '',
-        favicon: {
-            type: 'image/png',
-            path: '/assets/underpost.png'
-        },
-        lang: 'es',
-        charset: 'utf-8',
-        dir: 'ltr',
-        router: './src/client.js'
+        title: ''
+    },
+    {
+        path: '/create-key',
+        title: 'Create Key'
     }
 ];
-
-//-------------------------------------------------------
-// init
-//-------------------------------------------------------
 
 const renders = views.map(view => {
     return {
         path: view.path,
-        render: renderView(view)
+        render: renderView({
+            ...view,
+            ...viewMetaData
+        })
     };
 });
 
