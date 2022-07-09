@@ -39,6 +39,7 @@ const renderView = dataView => /*html*/`
                     <title> ${dataView.title != '' ? dataView.title + ' - ' : ''}${title} </title>
                     <link rel='icon' type='${dataView.favicon.type}' href='${dataView.favicon.path}'>
                     <meta name='viewport' content='initial-scale=1.0, maximum-scale=1.0, user-scalable=0'>
+                    <style>${fs.readFileSync('./src/assets/style/global.css', dataView.charset)}</style>
                 </head>
                 <body>                  
                     <script>${fs.readFileSync(dataView.router, dataView.charset)}</script>
