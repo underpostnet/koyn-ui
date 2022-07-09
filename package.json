@@ -1,0 +1,25 @@
+{
+  "name": "koyn-ui",
+  "description": "Crypto Koyn Graphical Interface",
+  "version": "2.0.0",
+  "main": "./src/server.js",
+  "scripts": {
+    "start": "node src/server",
+    "dev": "nodemon src/server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/underpostnet/koyn-ui"
+  },
+  "keywords": [
+    "network",
+    "underpost.net",
+    "koyn"
+  ],
+  "author": "Francisco Verdugo <fcoverdugoa@underpost.net> (https://underpost.net/)",
+  "license": "MIT",
+  "homepage": "https://underpost.net",
+  "dependencies": {
+    "express": "latest"
+  }
+}
