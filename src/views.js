@@ -66,4 +66,11 @@ module.exports = (app) => {
 
     renders.map(view => app.get(view.path,
         (req, res) => res.end(view.render)));
+
+    return {
+        title,
+        viewMetaData,
+        views,
+        renderView
+    }
 };

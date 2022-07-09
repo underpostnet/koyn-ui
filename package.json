@@ -20,6 +20,9 @@
   "license": "MIT",
   "homepage": "https://underpost.net",
   "dependencies": {
-    "express": "latest"
+    "express": "latest",
+    "nodemon": "latest",
+    "crypto": "latest",
+    "chalk": "4.1.2"
   }
 }
