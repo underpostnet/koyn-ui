@@ -11,7 +11,6 @@ body {
     font-family: arial;
     background: black;
     color: white;
-    font-size: 20px;
 
 }
 
@@ -170,6 +169,7 @@ div, input, button, form {
     outline: none;
     padding: 10px;
     margin: 10px;
+    font-size: 18px;
 }
 
 button {
@@ -182,4 +182,8 @@ button {
 button:hover {
     border: 3px solid yellow;
     color: yellow;
+}
+
+.fa {
+    padding: 5px;
 }

@@ -40,6 +40,7 @@ const renderView = dataView => /*html*/`
                     <link rel='icon' type='${dataView.favicon.type}' href='${dataView.favicon.path}'>
                     <meta name='viewport' content='initial-scale=1.0, maximum-scale=1.0, user-scalable=0'>
                     <style>${fs.readFileSync('./src/assets/style/global.css', dataView.charset)}</style>
+                    <link rel='stylesheet' href='/fontawesome/all.min.css'>
                 </head>
                 <body>                  
                     <script>${fs.readFileSync(dataView.router, dataView.charset)}</script>
@@ -53,6 +54,8 @@ const renderView = dataView => /*html*/`
 
 module.exports = (app) => {
     app.use('/assets', express.static('./src/assets'));
+    app.use('/fontawesome', express.static('./node_modules/@fortawesome/fontawesome-free/css'));
+    app.use('/webfonts', express.static('./node_modules/@fortawesome/fontawesome-free/webfonts'));
 
     const renders = views.map(view => {
         return {

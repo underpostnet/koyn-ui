@@ -45,7 +45,7 @@ const CREATE_KEY = {
                 <form class='in'>
                   ${{ es: 'Contraseña llave publica', en: 'Public Key password' }[s('html').lang]}
                   <input class='${IDS[0]}' type='password' autocomplete='new-password' placeholder=' ...'>
-                  <button class='${IDS[1]}'>${{ es: 'Crear llaves', en: 'Create keys' }[s('html').lang]}</button>
+                  <button class='${IDS[1]}'><i class='fa fa-key' aria-hidden='true'></i>${{ es: 'Crear llaves', en: 'Create keys' }[s('html').lang]}</button>
                 </form>
                 <div class='in ${IDS[2]}' style='font-size: 12px; display: none; overflow: auto'>
                     <pre class='${IDS[3]}'></pre>
