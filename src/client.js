@@ -54,14 +54,12 @@ const CREATE_KEY = {
                         s('.' + IDS[3]).style.display = 'none';
                         fadeIn(s('.' + IDS[2]));
                         fadeIn(s('.' + IDS[4]));
+                        s('.' + IDS[0]).value = '';
                     });
 
             };
         });
         return /*html*/`
-            <div class='in container' style='margin-top: 20px'>
-                KOYN UI v1.0.0
-            </div>
             <div class='in container'>
                 <form class='in ${IDS[4]}'>
                   ${{ es: 'Contraseña llave publica', en: 'Public Key password' }[s('html').lang]}
@@ -77,6 +75,12 @@ const CREATE_KEY = {
 };
 
 
-append('body', CREATE_KEY.init());
+append('body', /*html*/`
+        <div class='in container' style='margin-top: 20px'>
+               KOYN UI v1.0.0
+        </div>
+        ${CREATE_KEY.init()}
+
+`);
 
 
