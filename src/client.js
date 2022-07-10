@@ -49,7 +49,7 @@ const renderSpinner = (IDS) => {
 const errorIcon = /*html*/`<i class='fa fa-exclamation-triangle' aria-hidden='true'></i>`;
 
 const CREATE_KEY = {
-    IDS: range(0, 9).map(() => 'CREATE_KEY-' + s4()),
+    IDS: range(0, 10).map(() => 'CREATE_KEY-' + s4()),
     init: function () {
         const labelInputs = [8, 9];
         const inputValueContent = [7, 0];
@@ -85,7 +85,10 @@ const CREATE_KEY = {
                     s('.' + this.IDS[labelInputs[i]]).style.top = botLabelInput;
                 s('.' + this.IDS[inputId]).onfocus = () =>
                     s('.' + this.IDS[labelInputs[i]]).style.top = botLabelInput;
-                if (setEvent) return;
+                if (setEvent) {
+                    s('.' + this.IDS[labelInputs[i]]).style.top = topLabelInput;
+                    return;
+                };
                 return s('.' + this.IDS[inputId]).oninput();
             }).filter(x => x == false).length === 0;
 
@@ -97,7 +100,7 @@ const CREATE_KEY = {
             };
 
             checkAllInput(true);
-
+            s('.' + this.IDS[10]).onclick = e => setTimeout(() => checkAllInput(true));
             s('.' + this.IDS[1]).onclick = e => {
                 e.preventDefault();
                 console.log('onclick', s('.' + this.IDS[0]).value);
@@ -147,7 +150,7 @@ const CREATE_KEY = {
                   <button type="submit" class='${this.IDS[1]}'>
                          ${renderLang({ es: 'Crear', en: 'Create' })}
                   </button>
-                  <button type="reset">
+                  <button type="reset" class='${this.IDS[10]}'>
                          ${renderLang({ es: "Limpiar", en: "Reset" })}
                   </button>
                 </form>
@@ -177,7 +180,7 @@ const TABLE_KEYS = {
 
 
 append('body', /*html*/`
-        <div class='in container' style='margin-top: 20px'>
+        <div class='in container main-title' style='${borderChar(1, 'yellow')}'>
                KOYN UI v1.0.0
         </div>
         ${CREATE_KEY.init()}
