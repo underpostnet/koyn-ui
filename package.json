@@ -24,6 +24,8 @@
     "chalk": "4.1.2",
     "crypto": "latest",
     "express": "latest",
-    "nodemon": "latest"
+    "nodemon": "latest",
+    "morgan": "latest",
+    "winston": "latest"
   }
 }

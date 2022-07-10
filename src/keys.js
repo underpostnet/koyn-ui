@@ -74,7 +74,7 @@ const getKeys = (req, res) => {
 };
 
 module.exports = app => {
-    app.post('/keys/create-key', createKey);
-    app.get('/keys', getKeys);
+    app.post('/api/keys/create-key', createKey);
+    app.get('/api/keys', getKeys);
     return { createKey, getKeys };
 };

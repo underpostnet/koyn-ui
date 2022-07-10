@@ -17,6 +17,7 @@ module.exports = tests => {
 
     return;
 
+
     console.log(color.yellow('test keys.getKeys'));
     tests.keys.getKeys(
         {},

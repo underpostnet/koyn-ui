@@ -77,22 +77,18 @@ const CREATE_KEY = {
                 }
             };
 
-
-
             const checkAllInput = (setEvent) => inputValueContent.map((inputId, i) => {
-
-                s('.' + this.IDS[inputId]).onblur = () =>
-                    checkInput(i, inputId);
-                s('.' + this.IDS[inputId]).oninput = () =>
-                    checkInput(i, inputId);
-                s('.' + this.IDS[labelInputs[i]]).onclick = () =>
-                    s('.' + this.IDS[inputId]).focus();
-                s('.' + this.IDS[inputId]).onclick = () =>
-                    s('.' + this.IDS[labelInputs[i]]).style.top = botLabelInput;
-                s('.' + this.IDS[inputId]).onfocus = () =>
-                    s('.' + this.IDS[labelInputs[i]]).style.top = botLabelInput;
                 if (setEvent) {
-                    s('.' + this.IDS[labelInputs[i]]).style.top = topLabelInput;
+                    s('.' + this.IDS[inputId]).onblur = () =>
+                        checkInput(i, inputId);
+                    s('.' + this.IDS[inputId]).oninput = () =>
+                        checkInput(i, inputId);
+                    s('.' + this.IDS[labelInputs[i]]).onclick = () =>
+                        s('.' + this.IDS[inputId]).focus();
+                    s('.' + this.IDS[inputId]).onclick = () =>
+                        s('.' + this.IDS[labelInputs[i]]).style.top = botLabelInput;
+                    s('.' + this.IDS[inputId]).onfocus = () =>
+                        s('.' + this.IDS[labelInputs[i]]).style.top = botLabelInput;
                     return;
                 };
                 return s('.' + this.IDS[inputId]).oninput();
@@ -101,6 +97,7 @@ const CREATE_KEY = {
             const resetInputs = () => {
                 s('.' + this.IDS[3]).style.display = 'none';
                 fadeIn(s('.' + this.IDS[4]));
+                [12, 5, 6, 11].map(errorId => s('.' + this.IDS[errorId]).style.display = 'none');
                 inputValueContent.map((inputId, i) => {
                     s('.' + this.IDS[inputId]).value = '';
                     s('.' + this.IDS[labelInputs[i]]).style.top = topLabelInput;
@@ -108,10 +105,7 @@ const CREATE_KEY = {
             };
 
             checkAllInput(true);
-            s('.' + this.IDS[10]).onclick = e => setTimeout(() => {
-                [12, 5, 6, 11].map(errorId => s('.' + this.IDS[errorId]).style.display = 'none');
-                checkAllInput(true);
-            });
+            s('.' + this.IDS[10]).onclick = e => setTimeout(() => resetInputs());
             s('.' + this.IDS[1]).onclick = e => {
                 e.preventDefault();
                 console.log('onclick', s('.' + this.IDS[0]).value);
@@ -121,7 +115,7 @@ const CREATE_KEY = {
                 fadeIn(s('.' + this.IDS[3]));
                 const errorMsgService =
                     renderLang({ es: 'Error en el Servicio', en: 'Service Error' });
-                fetch('/keys/create-key', {
+                fetch('/api/keys/create-key', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -133,20 +127,18 @@ const CREATE_KEY = {
                 })
                     .then((res) => res.json())
                     .then((res) => {
+                        resetInputs();
                         if (res.status == 'error') {
                             console.log('POST ERROR - /create-key', res.data);
-                            renderMsgInput(11, errorMsgService);
-                        } else {
-                            console.log('POST SUCCESS - /create-key', res.data);
-                            htmls('.' + this.IDS[2], res.data.privateKey);
-                            fadeIn(s('.' + this.IDS[2]));
-                            renderMsgInput(12, renderLang({ es: 'Las llaves han sido creadas', en: 'The keys have been created' }), true);
-                        };
-                        return resetInputs();
+                            return renderMsgInput(11, errorMsgService);
+                        }
+                        console.log('POST SUCCESS - /create-key', res.data);
+                        htmls('.' + this.IDS[2], res.data.privateKey);
+                        fadeIn(s('.' + this.IDS[2]));
+                        return renderMsgInput(12, renderLang({ es: 'Las llaves han sido creadas', en: 'The keys have been created' }), true);
                     }).catch(error => {
                         console.log('POST ERROR - /create-key', error);
-                        renderMsgInput(11, errorMsgService);
-                        return resetInputs();
+                        return renderMsgInput(11, errorMsgService);
                     });
 
             };
