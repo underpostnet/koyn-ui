@@ -158,20 +158,23 @@ a {
     background: #555;
 }
 
+/* app */
+
 .container {
     max-width: 500px;
     margin: auto;
     border: 3px solid #141414;
+    padding: 10px;
 }
 
-div, input, button, form {
+html, body, input, button, form {
     border: none;
     outline: none;
-    padding: 10px;
-    margin: 10px;
+    padding: 5px;
+    margin: 5px;
     font-size: 18px;
+    overflow: auto;
 }
-
 button {
     cursor: pointer;
     border: 3px solid white;
@@ -186,4 +189,79 @@ button:hover {
 
 .fa {
     padding: 5px;
+}
+
+
+/* spinner */
+
+.lds-ellipsis,
+.lds-ellipsis div {
+    box-sizing: border-box
+}
+
+.lds-ellipsis {
+    display: inline-block;
+    position: relative;
+    width: 80px;
+    height: 80px
+}
+
+.lds-ellipsis div {
+    position: absolute;
+    top: 33.33333px;
+    width: 13.33333px;
+    height: 13.33333px;
+    border-radius: 50%;
+    background: currentColor;
+    animation-timing-function: cubic-bezier(0, 1, 1, 0)
+}
+
+.lds-ellipsis div:nth-child(1) {
+    left: 8px;
+    animation: lds-ellipsis1 .6s infinite
+}
+
+.lds-ellipsis div:nth-child(2) {
+    left: 8px;
+    animation: lds-ellipsis2 .6s infinite
+}
+
+.lds-ellipsis div:nth-child(3) {
+    left: 32px;
+    animation: lds-ellipsis2 .6s infinite
+}
+
+.lds-ellipsis div:nth-child(4) {
+    left: 56px;
+    animation: lds-ellipsis3 .6s infinite
+}
+
+@keyframes lds-ellipsis1 {
+    0% {
+        transform: scale(0)
+    }
+
+    100% {
+        transform: scale(1)
+    }
+}
+
+@keyframes lds-ellipsis3 {
+    0% {
+        transform: scale(1)
+    }
+
+    100% {
+        transform: scale(0)
+    }
+}
+
+@keyframes lds-ellipsis2 {
+    0% {
+        transform: translate(0, 0)
+    }
+
+    100% {
+        transform: translate(24px, 0)
+    }
 }
