@@ -37,30 +37,39 @@ const spinner = /*html*/`
 const errorIcon = /*html*/`<i class='fa fa-exclamation-triangle' aria-hidden='true'></i>`;
 
 const CREATE_KEY = {
-    IDS: range(0, 5).map(() => 'CREATE_KEY-' + s4()),
+    IDS: range(0, 7).map(() => 'CREATE_KEY-' + s4()),
     init: function () {
 
 
         setTimeout(() => {
 
-            const checkInput = () => {
-                if (s('.' + this.IDS[0]).value == '') {
-                    htmls('.' + this.IDS[5], errorIcon + renderLang({ es: 'Campo vacio', en: 'Empty Field' }));
-                    fadeIn(s('.' + this.IDS[5]));
+            const checkInput = (id, inputId) => {
+                if (s('.' + this.IDS[inputId]).value == '') {
+                    htmls('.' + this.IDS[id], errorIcon + renderLang({ es: 'Campo vacio', en: 'Empty Field' }));
+                    fadeIn(s('.' + this.IDS[id]));
                     return false;
                 } else {
-                    s('.' + this.IDS[5]).style.display = 'none';
+                    s('.' + this.IDS[id]).style.display = 'none';
                     return true;
                 }
             };
 
-            s('.' + this.IDS[0]).onblur = () => checkInput();
-            s('.' + this.IDS[0]).oninput = () => checkInput();
+            const errorsIdInput = [5, 6];
+            const inputValueContent = [0, 7];
+
+            const checkAllInput = (setEvent) => inputValueContent.map((inputId, i) => {
+                s('.' + this.IDS[inputId]).onblur = () => checkInput(errorsIdInput[i], inputId);
+                s('.' + this.IDS[inputId]).oninput = () => checkInput(errorsIdInput[i], inputId);
+                if (setEvent) return;
+                return s('.' + this.IDS[inputId]).oninput();
+            }).filter(x => x == false).length === 0;
+
+            checkAllInput(true);
 
             s('.' + this.IDS[1]).onclick = e => {
                 e.preventDefault();
                 console.log('onclick', s('.' + this.IDS[0]).value);
-                if (!checkInput()) return;
+                if (!checkAllInput()) return;
                 s('.' + this.IDS[2]).style.display = 'none';
                 s('.' + this.IDS[4]).style.display = 'none';
                 fadeIn(s('.' + this.IDS[3]));
@@ -78,7 +87,8 @@ const CREATE_KEY = {
                         s('.' + this.IDS[3]).style.display = 'none';
                         fadeIn(s('.' + this.IDS[2]));
                         fadeIn(s('.' + this.IDS[4]));
-                        s('.' + this.IDS[0]).value = '';
+                        inputValueContent.map(inputId =>
+                            s('.' + this.IDS[inputId]).value = '');
                     });
 
             };
@@ -86,9 +96,15 @@ const CREATE_KEY = {
         return /*html*/`
             <div class='in container'>
                 <form class='in ${this.IDS[4]}'>
-                  ${renderLang({ es: 'Contraseña llave publica', en: 'Public Key password' })}
-                  <input class='${this.IDS[0]}' type='password' autocomplete='new-password' placeholder=' ...'>
+
+                  ${renderLang({ es: 'Nombre', en: 'Name' })} <br>
+                  <input class='in ${this.IDS[7]}' type='text' placeholder=' ...'>
+                  <div class='in error-input ${this.IDS[6]}'></div>
+
+                  ${renderLang({ es: 'Contraseña', en: 'Password' })} <br>
+                  <input class='in ${this.IDS[0]}' type='password' autocomplete='new-password' placeholder=' ...'>
                   <div class='in error-input ${this.IDS[5]}'></div>
+
                   <button class='${this.IDS[1]}'><i class='fa fa-key' aria-hidden='true'></i>${renderLang({ es: 'Crear llaves', en: 'Create keys' })}</button>
                 </form>
                 <pre class='in ${this.IDS[2]}' style='display: none;'></pre>
