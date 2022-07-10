@@ -108,7 +108,7 @@ const CREATE_KEY = {
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ 
+                    body: JSON.stringify({
                         passphrase: s('.' + this.IDS[0]).value,
                         name: s('.' + this.IDS[7]).value
                     }),
@@ -143,10 +143,10 @@ const CREATE_KEY = {
                   <div class='in error-input ${this.IDS[5]}'></div>
 
                   <button type="submit" class='${this.IDS[1]}'>
-                    ${renderLang({ es: 'Crear', en: 'Create' })}
+                         ${renderLang({ es: 'Crear', en: 'Create' })}
                   </button>
                   <button type="reset">
-                         ${renderLang({es: "Limpiar", en: "Reset"})}
+                         ${renderLang({ es: "Limpiar", en: "Reset" })}
                   </button>
                 </form>
                 <pre class='in ${this.IDS[2]}' style='display: none;'></pre>
