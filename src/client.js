@@ -220,7 +220,7 @@
             setTimeout(() => this.renderTable());
             return /*html*/`
             <div class='in container'>
-                ${renderSpinner(this.IDS[1], true)}
+                ${renderSpinner(this.IDS[1])}
                 <div class='in ${this.IDS[0]}' style='display: none'></div>
             </div>
         `;
