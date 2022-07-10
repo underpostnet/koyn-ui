@@ -67,7 +67,7 @@ const getKeys = (req, res) => {
                     name: key.split('\\')[2].split('-')[0],
                     date: parseInt(key.split('\\')[2].split('-')[1])
                 }
-            })
+            }).filter((v,i)=>i%2==0)
         })
     } catch (error) {
         return res.status(500).json({

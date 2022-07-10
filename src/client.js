@@ -203,14 +203,19 @@
         }),
         renderTable: async function () {
             const keys = await this.getKeys();
+            htmls('.' + this.IDS[0], keys[0] ? /*html*/`
+                <table>
+                    <tr> ${Object.keys(keys[0]).map(key =>/*html*/`<th>${key}</th>`).join('')} </tr>
 
-
+                    ${keys.map(row => '<tr>' + Object.keys(keys[0]).map(key =>/*html*/`<th>${row[key]}</th>`).join('') + '</tr>').join('')}
+                </table>
             
+            `: '');
         },
         init: function () {
             setTimeout(() => this.renderTable());
             return /*html*/`
-            <div class=' in container ${this.IDS[0]}'> </div>
+            <div class='in container ${this.IDS[0]}'></div>
         `;
         }
     };
