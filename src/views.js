@@ -11,7 +11,7 @@ const viewMetaData = {
         type: 'image/png',
         path: '/assets/underpost.png'
     },
-    lang: 'en',
+    lang: 'es',
     charset: 'utf-8',
     dir: 'ltr',
     router: './src/client.js'

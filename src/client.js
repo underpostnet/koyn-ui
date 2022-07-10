@@ -22,6 +22,11 @@ const fadeIn = (el, display) => {
     fade();
 };
 
+const renderLang = langs => {
+    if (langs[s('html').lang]) return langs[s('html').lang];
+    return langs['en'];
+};
+
 const spinner = /*html*/`
              <div class='inl'>
                   <div class='lds-ellipsis'><div></div><div></div><div></div><div></div></div>
@@ -40,7 +45,7 @@ const CREATE_KEY = {
 
             const checkInput = () => {
                 if (s('.' + this.IDS[0]).value == '') {
-                    htmls('.' + this.IDS[5], errorIcon + { es: 'Campo vacio', en: 'Empty Field' }[s('html').lang]);
+                    htmls('.' + this.IDS[5], errorIcon + renderLang({ es: 'Campo vacio', en: 'Empty Field' }));
                     fadeIn(s('.' + this.IDS[5]));
                     return false;
                 } else {
@@ -59,7 +64,7 @@ const CREATE_KEY = {
                 s('.' + this.IDS[2]).style.display = 'none';
                 s('.' + this.IDS[4]).style.display = 'none';
                 fadeIn(s('.' + this.IDS[3]));
-                fetch('/create-key', {
+                fetch('/keys/create-key', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -81,10 +86,10 @@ const CREATE_KEY = {
         return /*html*/`
             <div class='in container'>
                 <form class='in ${this.IDS[4]}'>
-                  ${{ es: 'Contraseña llave publica', en: 'Public Key password' }[s('html').lang]}
+                  ${renderLang({ es: 'Contraseña llave publica', en: 'Public Key password' })}
                   <input class='${this.IDS[0]}' type='password' autocomplete='new-password' placeholder=' ...'>
                   <div class='in error-input ${this.IDS[5]}'></div>
-                  <button class='${this.IDS[1]}'><i class='fa fa-key' aria-hidden='true'></i>${{ es: 'Crear llaves', en: 'Create keys' }[s('html').lang]}</button>
+                  <button class='${this.IDS[1]}'><i class='fa fa-key' aria-hidden='true'></i>${renderLang({ es: 'Crear llaves', en: 'Create keys' })}</button>
                 </form>
                 <pre class='in ${this.IDS[2]}' style='display: none;'></pre>
                 
@@ -95,11 +100,28 @@ const CREATE_KEY = {
 };
 
 
+const TABLE_KEYS = {
+    IDS: range(0, 10).map(() => 'TABLE_KEYS-' + s4()),
+    renderTable: function () {
+
+    },
+    init: function () {
+
+        return /*html*/`
+            <div class=' in container ${this.IDS[0]}'>
+                    table keys
+            </div>
+        `;
+    }
+};
+
+
 append('body', /*html*/`
         <div class='in container' style='margin-top: 20px'>
                KOYN UI v1.0.0
         </div>
         ${CREATE_KEY.init()}
+        ${TABLE_KEYS.init()}
 
 `);
 

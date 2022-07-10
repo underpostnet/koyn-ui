@@ -2,6 +2,12 @@
 
 const crypto = require('crypto');
 const fs = require('fs');
+const { getAllFiles } = require('./files.js');
+const keyFolder = './data/keys';
+
+const checkKeysFolder = () => {
+    if (!fs.existsSync(keyFolder)) fs.mkdirSync(keyFolder);
+};
 
 const createKey = (req, res) => {
 
@@ -22,19 +28,25 @@ const createKey = (req, res) => {
         });
 
 
-    if (!fs.existsSync('./data/keys')) fs.mkdirSync('./data/keys');
+    checkKeysFolder();
 
-    const timeStamp = (+ new Date());
+    const folderName = req.body.name + '-' + (+ new Date());
 
-    fs.mkdirSync(`./data/keys/${timeStamp}`);
-    fs.writeFileSync(`./data/keys/${timeStamp}/public.pem`, publicKey, 'utf8');
-    fs.writeFileSync(`./data/keys/${timeStamp}/private.pem`, privateKey, 'utf8');
+    fs.mkdirSync(`./data/keys/${folderName}`);
+    fs.writeFileSync(`./data/keys/${folderName}/public.pem`, publicKey, 'utf8');
+    fs.writeFileSync(`./data/keys/${folderName}/private.pem`, privateKey, 'utf8');
 
     return res.end(JSON.stringify({ publicKey, privateKey }, null, 4));
 
 };
 
+const getKeys = (req, res) => {
+    checkKeysFolder();
+    return res.end(JSON.stringify(getAllFiles(keyFolder)));
+};
+
 module.exports = app => {
-    app.post('/create-key', createKey);
-    return { createKey };
+    app.post('/keys/create-key', createKey);
+    app.get('/keys', getKeys);
+    return { createKey, getKeys };
 };
