@@ -108,7 +108,10 @@ const CREATE_KEY = {
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ passphrase: s('.' + this.IDS[0]).value }),
+                    body: JSON.stringify({ 
+                        passphrase: s('.' + this.IDS[0]).value,
+                        name: s('.' + this.IDS[7]).value
+                    }),
                 })
                     .then((res) => res.json())
                     .then((res) => {
@@ -139,8 +142,11 @@ const CREATE_KEY = {
                   <input class='in ${this.IDS[0]}' type='password' autocomplete='new-password'>
                   <div class='in error-input ${this.IDS[5]}'></div>
 
-                  <button class='${this.IDS[1]}'>
+                  <button type="submit" class='${this.IDS[1]}'>
                     ${renderLang({ es: 'Crear', en: 'Create' })}
+                  </button>
+                  <button type="reset">
+                         ${renderLang({es: "Limpiar", en: "Reset"})}
                   </button>
                 </form>
                 <pre class='in ${this.IDS[2]}' style='display: none;'></pre>
