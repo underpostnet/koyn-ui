@@ -37,11 +37,13 @@ const renderLang = langs => {
 };
 // s('html').lang = 'en';
 
-const spinner = /*html*/`
-             <div class='inl'>
-                  <div class='lds-ellipsis'><div></div><div></div><div></div><div></div></div>
-             </div>
-`;
+const renderSpinner = (IDS) => {
+    return /*html*/`
+        <div class='in ${IDS}' style='text-align: center; display: none;'>
+            <div class='lds-ellipsis'><div></div><div></div><div></div><div></div></div>
+        </div>
+    `
+};
 
 
 const errorIcon = /*html*/`<i class='fa fa-exclamation-triangle' aria-hidden='true'></i>`;
@@ -151,7 +153,7 @@ const CREATE_KEY = {
                 </form>
                 <pre class='in ${this.IDS[2]}' style='display: none;'></pre>
                 
-                <div class='in ${this.IDS[3]}' style='text-align: center; display: none;'>${spinner}</div>
+                ${renderSpinner(this.IDS[3])}
             </div>
         `
     }
