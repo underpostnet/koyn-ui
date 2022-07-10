@@ -167,7 +167,11 @@ a {
     padding: 10px;
 }
 
-html, body, input, button, form {
+html,
+body,
+input,
+button,
+form {
     border: none;
     outline: none;
     padding: 5px;
@@ -175,6 +179,7 @@ html, body, input, button, form {
     font-size: 18px;
     overflow: auto;
 }
+
 button {
     cursor: pointer;
     border: 3px solid white;
@@ -189,6 +194,13 @@ button:hover {
 
 .fa {
     padding: 5px;
+}
+
+.error-input {
+    color: red;
+    display: none;
+    padding: 5px;
+    border-top: 3px solid red;
 }
 
 
