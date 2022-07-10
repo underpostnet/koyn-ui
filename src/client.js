@@ -26,6 +26,7 @@ const renderLang = langs => {
     if (langs[s('html').lang]) return langs[s('html').lang];
     return langs['en'];
 };
+// s('html').lang = 'en';
 
 const spinner = /*html*/`
              <div class='inl'>
@@ -97,15 +98,22 @@ const CREATE_KEY = {
             <div class='in container'>
                 <form class='in ${this.IDS[4]}'>
 
-                  ${renderLang({ es: 'Nombre', en: 'Name' })} <br>
+                   <div class='in title'>
+                       <i class='fa fa-key' aria-hidden='true'></i>
+                       ${renderLang({ es: 'Crear llaves', en: 'Create keys' })}
+                   </div>
+
+                  <div class='in'>${renderLang({ es: 'Nombre', en: 'Name' })}</div>
                   <input class='in ${this.IDS[7]}' type='text' placeholder=' ...'>
                   <div class='in error-input ${this.IDS[6]}'></div>
 
-                  ${renderLang({ es: 'Contraseña', en: 'Password' })} <br>
+                  <div class='in'>${renderLang({ es: 'Contraseña', en: 'Password' })}</div>
                   <input class='in ${this.IDS[0]}' type='password' autocomplete='new-password' placeholder=' ...'>
                   <div class='in error-input ${this.IDS[5]}'></div>
 
-                  <button class='${this.IDS[1]}'><i class='fa fa-key' aria-hidden='true'></i>${renderLang({ es: 'Crear llaves', en: 'Create keys' })}</button>
+                  <button class='${this.IDS[1]}'>
+                    ${renderLang({ es: 'Crear', en: 'Create' })}
+                  </button>
                 </form>
                 <pre class='in ${this.IDS[2]}' style='display: none;'></pre>
                 

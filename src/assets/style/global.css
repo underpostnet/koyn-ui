@@ -203,6 +203,13 @@ button:hover {
     border-top: 3px solid red;
 }
 
+.title {
+    color: orange;
+    font-size: 20px;
+    border-bottom: 3px solid orange;
+    margin-bottom: 10px;
+}
+
 
 /* spinner */
 
