@@ -185,11 +185,24 @@ button {
     border: 3px solid white;
     background: black;
     color: white;
+    margin-top: 20px;
 }
 
 button:hover {
     border: 3px solid yellow;
     color: yellow;
+}
+
+.label {
+    transition: .3s;
+    z-index: 1;
+    color: orange;
+    padding-left: 20px;
+}
+
+input {
+    background: #1f1f1f;
+    color: white;
 }
 
 .fa {

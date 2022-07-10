@@ -22,6 +22,15 @@ const fadeIn = (el, display) => {
     fade();
 };
 
+const borderChar = (px_, color_) => {
+    return `
+	text-shadow: `+ px_ + `px -` + px_ + `px ` + px_ + `px ` + color_ + `,
+							 -`+ px_ + `px ` + px_ + `px ` + px_ + `px ` + color_ + `,
+							 -`+ px_ + `px -` + px_ + `px ` + px_ + `px ` + color_ + `,
+							 `+ px_ + `px ` + px_ + `px ` + px_ + `px ` + color_ + `;
+	`;
+};
+
 const renderLang = langs => {
     if (langs[s('html').lang]) return langs[s('html').lang];
     return langs['en'];
@@ -38,32 +47,52 @@ const spinner = /*html*/`
 const errorIcon = /*html*/`<i class='fa fa-exclamation-triangle' aria-hidden='true'></i>`;
 
 const CREATE_KEY = {
-    IDS: range(0, 7).map(() => 'CREATE_KEY-' + s4()),
+    IDS: range(0, 9).map(() => 'CREATE_KEY-' + s4()),
     init: function () {
-
+        const labelInputs = [8, 9];
+        const inputValueContent = [7, 0];
+        const errorsIdInput = [6, 5];
+        const topLabelInput = '30px';
+        const botLabelInput = '0px';
 
         setTimeout(() => {
 
-            const checkInput = (id, inputId) => {
+            const checkInput = (i, inputId) => {
                 if (s('.' + this.IDS[inputId]).value == '') {
-                    htmls('.' + this.IDS[id], errorIcon + renderLang({ es: 'Campo vacio', en: 'Empty Field' }));
-                    fadeIn(s('.' + this.IDS[id]));
+                    s('.' + this.IDS[labelInputs[i]]).style.top = topLabelInput;
+                    htmls('.' + this.IDS[errorsIdInput[i]], errorIcon + renderLang({ es: 'Campo vacio', en: 'Empty Field' }));
+                    fadeIn(s('.' + this.IDS[errorsIdInput[i]]));
                     return false;
                 } else {
-                    s('.' + this.IDS[id]).style.display = 'none';
+                    s('.' + this.IDS[labelInputs[i]]).style.top = botLabelInput;
+                    s('.' + this.IDS[errorsIdInput[i]]).style.display = 'none';
                     return true;
                 }
             };
 
-            const errorsIdInput = [5, 6];
-            const inputValueContent = [0, 7];
+
 
             const checkAllInput = (setEvent) => inputValueContent.map((inputId, i) => {
-                s('.' + this.IDS[inputId]).onblur = () => checkInput(errorsIdInput[i], inputId);
-                s('.' + this.IDS[inputId]).oninput = () => checkInput(errorsIdInput[i], inputId);
+                s('.' + this.IDS[inputId]).onblur = () =>
+                    checkInput(i, inputId);
+                s('.' + this.IDS[inputId]).oninput = () =>
+                    checkInput(i, inputId);
+                s('.' + this.IDS[labelInputs[i]]).onclick = () =>
+                    s('.' + this.IDS[inputId]).focus();
+                s('.' + this.IDS[inputId]).onclick = () =>
+                    s('.' + this.IDS[labelInputs[i]]).style.top = botLabelInput;
+                s('.' + this.IDS[inputId]).onfocus = () =>
+                    s('.' + this.IDS[labelInputs[i]]).style.top = botLabelInput;
                 if (setEvent) return;
                 return s('.' + this.IDS[inputId]).oninput();
             }).filter(x => x == false).length === 0;
+
+            const resetInputs = () => {
+                inputValueContent.map((inputId, i) => {
+                    s('.' + this.IDS[inputId]).value = '';
+                    s('.' + this.IDS[labelInputs[i]]).style.top = topLabelInput;
+                });
+            };
 
             checkAllInput(true);
 
@@ -88,8 +117,7 @@ const CREATE_KEY = {
                         s('.' + this.IDS[3]).style.display = 'none';
                         fadeIn(s('.' + this.IDS[2]));
                         fadeIn(s('.' + this.IDS[4]));
-                        inputValueContent.map(inputId =>
-                            s('.' + this.IDS[inputId]).value = '');
+                        resetInputs();
                     });
 
             };
@@ -103,12 +131,12 @@ const CREATE_KEY = {
                        ${renderLang({ es: 'Crear llaves', en: 'Create keys' })}
                    </div>
 
-                  <div class='in'>${renderLang({ es: 'Nombre', en: 'Name' })}</div>
-                  <input class='in ${this.IDS[7]}' type='text' placeholder=' ...'>
+                  <div class='in label ${this.IDS[8]}' style='top: ${topLabelInput}'>${renderLang({ es: 'Nombre', en: 'Name' })}</div>
+                  <input class='in ${this.IDS[7]}' type='text'>
                   <div class='in error-input ${this.IDS[6]}'></div>
 
-                  <div class='in'>${renderLang({ es: 'Contraseña', en: 'Password' })}</div>
-                  <input class='in ${this.IDS[0]}' type='password' autocomplete='new-password' placeholder=' ...'>
+                  <div class='in label ${this.IDS[9]}' style='top: ${topLabelInput}'>${renderLang({ es: 'Contraseña', en: 'Password' })}</div>
+                  <input class='in ${this.IDS[0]}' type='password' autocomplete='new-password'>
                   <div class='in error-input ${this.IDS[5]}'></div>
 
                   <button class='${this.IDS[1]}'>
