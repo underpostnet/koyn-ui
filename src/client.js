@@ -120,12 +120,15 @@ const CREATE_KEY = {
                 })
                     .then((res) => res.json())
                     .then((res) => {
-                        console.log('POST - /create-key', res);
+                        console.log('POST SUCCESS - /create-key', res);
+                        return;
                         htmls('.' + this.IDS[2], res.privateKey);
                         s('.' + this.IDS[3]).style.display = 'none';
                         fadeIn(s('.' + this.IDS[2]));
                         fadeIn(s('.' + this.IDS[4]));
                         resetInputs();
+                    }).catch(error => {
+                        console.log('POST ERROR - /create-key', error);
                     });
 
             };

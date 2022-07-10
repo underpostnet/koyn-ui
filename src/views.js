@@ -68,7 +68,10 @@ module.exports = (app) => {
     });
 
     renders.map(view => app.get(view.path,
-        (req, res) => res.end(view.render)));
+        (req, res) => {
+            res.setHeader('Content-Type', 'text/html');
+            return res.status(200).end(view.render);
+        }));
 
     return {
         title,

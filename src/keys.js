@@ -10,39 +10,67 @@ const checkKeysFolder = () => {
 };
 
 const createKey = (req, res) => {
+    res.setHeader('Content-Type', 'application/json');
+    try {
 
-    const { publicKey, privateKey } = crypto.generateKeyPairSync('rsa',
-        {
-            modulusLength: 4096,
-            namedCurve: 'secp256k1',
-            publicKeyEncoding: {
-                type: 'spki',
-                format: 'pem'
-            },
-            privateKeyEncoding: {
-                type: 'pkcs8',
-                format: 'pem',
-                cipher: 'aes-256-cbc',
-                passphrase: req.body.passphrase
+        const { publicKey, privateKey } = crypto.generateKeyPairSync('rsa',
+            {
+                modulusLength: 4096,
+                namedCurve: 'secp256k1',
+                publicKeyEncoding: {
+                    type: 'spki',
+                    format: 'pem'
+                },
+                privateKeyEncoding: {
+                    type: 'pkcs8',
+                    format: 'pem',
+                    cipher: 'aes-256-cbc',
+                    passphrase: req.body.passphrase
+                }
+            });
+
+
+        checkKeysFolder();
+
+        const folderName = req.body.name + '-' + (+ new Date());
+
+        fs.mkdirSync(`./data/keys/${folderName}`);
+        fs.writeFileSync(`./data/keys/${folderName}/public.pem`, publicKey, 'utf8');
+        fs.writeFileSync(`./data/keys/${folderName}/private.pem`, privateKey, 'utf8');
+
+
+        // https://restfulapi.net/http-status-codes/
+        return res.status(200).json({
+            status: 'success',
+            data: {
+                publicKey,
+                privateKey
             }
         });
-
-
-    checkKeysFolder();
-
-    const folderName = req.body.name + '-' + (+ new Date());
-
-    fs.mkdirSync(`./data/keys/${folderName}`);
-    fs.writeFileSync(`./data/keys/${folderName}/public.pem`, publicKey, 'utf8');
-    fs.writeFileSync(`./data/keys/${folderName}/private.pem`, privateKey, 'utf8');
-
-    return res.end(JSON.stringify({ publicKey, privateKey }, null, 4));
+    } catch (error) {
+        return res.status(500).json({
+            status: 'error',
+            data: error.message,
+        });
+    }
 
 };
 
 const getKeys = (req, res) => {
-    checkKeysFolder();
-    return res.end(JSON.stringify(getAllFiles(keyFolder)));
+    res.setHeader('Content-Type', 'application/json');
+    try {
+        checkKeysFolder();
+        return res.status(200).json({
+            status: 'success',
+            data: getAllFiles(keyFolder)
+        })
+    } catch (error) {
+        return res.status(500).json({
+            status: 'error',
+            data: error.message,
+        });
+    }
+
 };
 
 module.exports = app => {
