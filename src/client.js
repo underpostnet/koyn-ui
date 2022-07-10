@@ -45,11 +45,12 @@ const renderSpinner = (IDS) => {
     `
 };
 
-
+const maxIdComponent = 50;
 const errorIcon = /*html*/`<i class='fa fa-exclamation-triangle' aria-hidden='true'></i>`;
+const sucessIcon = /*html*/`<i class='fa fa-check-circle' aria-hidden='true'></i>`;
 
 const CREATE_KEY = {
-    IDS: range(0, 11).map(() => 'CREATE_KEY-' + s4()),
+    IDS: range(0, maxIdComponent).map(() => 'CREATE_KEY-' + s4()),
     init: function () {
         const labelInputs = [8, 9];
         const inputValueContent = [7, 0];
@@ -59,15 +60,15 @@ const CREATE_KEY = {
 
         setTimeout(() => {
 
-            const renderErrorMsgInput = (IDS, MSG) => {
-                htmls('.' + this.IDS[IDS], errorIcon + MSG);
+            const renderMsgInput = (IDS, MSG, STATUS) => {
+                htmls('.' + this.IDS[IDS], (STATUS ? sucessIcon : errorIcon) + MSG);
                 fadeIn(s('.' + this.IDS[IDS]));
             };
 
             const checkInput = (i, inputId) => {
                 if (s('.' + this.IDS[inputId]).value == '') {
                     s('.' + this.IDS[labelInputs[i]]).style.top = topLabelInput;
-                    renderErrorMsgInput(errorsIdInput[i], renderLang({ es: 'Campo vacio', en: 'Empty Field' }));
+                    renderMsgInput(errorsIdInput[i], renderLang({ es: 'Campo vacio', en: 'Empty Field' }));
                     return false;
                 } else {
                     s('.' + this.IDS[labelInputs[i]]).style.top = botLabelInput;
@@ -79,7 +80,7 @@ const CREATE_KEY = {
 
 
             const checkAllInput = (setEvent) => inputValueContent.map((inputId, i) => {
-                s('.' + this.IDS[11]).style.display = 'none';
+
                 s('.' + this.IDS[inputId]).onblur = () =>
                     checkInput(i, inputId);
                 s('.' + this.IDS[inputId]).oninput = () =>
@@ -107,7 +108,10 @@ const CREATE_KEY = {
             };
 
             checkAllInput(true);
-            s('.' + this.IDS[10]).onclick = e => setTimeout(() => checkAllInput(true));
+            s('.' + this.IDS[10]).onclick = e => setTimeout(() => {
+                [12, 5, 6, 11].map(errorId => s('.' + this.IDS[errorId]).style.display = 'none');
+                checkAllInput(true);
+            });
             s('.' + this.IDS[1]).onclick = e => {
                 e.preventDefault();
                 console.log('onclick', s('.' + this.IDS[0]).value);
@@ -131,16 +135,17 @@ const CREATE_KEY = {
                     .then((res) => {
                         if (res.status == 'error') {
                             console.log('POST ERROR - /create-key', res.data);
-                            renderErrorMsgInput(11, errorMsgService);
+                            renderMsgInput(11, errorMsgService);
                         } else {
                             console.log('POST SUCCESS - /create-key', res.data);
                             htmls('.' + this.IDS[2], res.data.privateKey);
                             fadeIn(s('.' + this.IDS[2]));
+                            renderMsgInput(12, renderLang({ es: 'Las llaves han sido creadas', en: 'The keys have been created' }), true);
                         };
                         return resetInputs();
                     }).catch(error => {
                         console.log('POST ERROR - /create-key', error);
-                        renderErrorMsgInput(11, errorMsgService);
+                        renderMsgInput(11, errorMsgService);
                         return resetInputs();
                     });
 
@@ -169,6 +174,7 @@ const CREATE_KEY = {
                   <button type='reset' class='${this.IDS[10]}'>
                          ${renderLang({ es: 'Limpiar', en: 'Reset' })}
                   </button>
+                  <div class='in success-input ${this.IDS[12]}'></div>
                   <div class='in error-input ${this.IDS[11]}'></div>
                 </form>
                 <pre class='in ${this.IDS[2]}' style='display: none;'></pre>
@@ -181,7 +187,7 @@ const CREATE_KEY = {
 
 
 const TABLE_KEYS = {
-    IDS: range(0, 10).map(() => 'TABLE_KEYS-' + s4()),
+    IDS: range(0, maxIdComponent).map(() => 'TABLE_KEYS-' + s4()),
     renderTable: function () {
 
     },
