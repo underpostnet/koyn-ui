@@ -1,5 +1,7 @@
-const fs = require('fs');
-const express = require('express');
+'use strict';
+
+import fs from 'fs';
+import express from 'express';
 
 // -------------------------------------------------------------
 // -------------------------------------------------------------
@@ -17,7 +19,7 @@ const viewMetaData = {
     router: './src/client.js'
 };
 
-const views = [
+const viewPaths = [
     {
         path: '/',
         title: ''
@@ -56,12 +58,12 @@ const renderView = dataView => /*html*/`
 // -------------------------------------------------------------
 // -------------------------------------------------------------
 
-module.exports = (app) => {
+export const views = (app) => {
     app.use('/assets', express.static('./src/assets'));
     app.use('/fontawesome', express.static('./node_modules/@fortawesome/fontawesome-free/css'));
     app.use('/webfonts', express.static('./node_modules/@fortawesome/fontawesome-free/webfonts'));
 
-    const renders = views.map(view => {
+    const renders = viewPaths.map(view => {
         return {
             path: view.path,
             render: renderView({
@@ -80,7 +82,7 @@ module.exports = (app) => {
     return {
         title,
         viewMetaData,
-        views,
+        viewPaths,
         renderView
     }
 };

@@ -1,8 +1,8 @@
+'use strict';
 
-
-const crypto = require('crypto');
-const fs = require('fs');
-const { getAllFiles } = require('./files.js');
+import crypto from 'crypto';
+import fs from 'fs';
+import { getAllFiles } from './files.js';
 const keyFolder = './data/keys';
 
 const checkKeysFolder = () => {
@@ -73,7 +73,7 @@ const getKeys = (req, res) => {
 
 };
 
-module.exports = app => {
+export const keys = app => {
     app.post('/api/keys/create-key', createKey);
     app.get('/api/keys', getKeys);
     return { createKey, getKeys };

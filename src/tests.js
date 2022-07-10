@@ -1,7 +1,8 @@
+'use strict';
 
-const color = require('chalk');
+import color from 'chalk';
 
-module.exports = tests => {
+export const tests = tests => {
 
     const res = {
         end: end => console.log(color.green('end ->', end)),
@@ -15,17 +16,16 @@ module.exports = tests => {
         }
     };
 
+
     return;
-
-
     console.log(color.yellow('test keys.getKeys'));
-    tests.keys.getKeys(
+    tests.keysInstance.getKeys(
         {},
         res
     );
 
     console.log(color.yellow('test keys.createKey'));
-    tests.keys.createKey(
+    tests.keysInstance.createKey(
         {
             body: { passphrase: 'test', name: 'test' }
         },

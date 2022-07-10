@@ -1,8 +1,10 @@
-const fs = require('fs');
-const path = require('path');
+'use strict';
+
+import fs from 'fs';
+import path from 'path';
 
 const getAllFiles = (dirPath, arrayOfFiles) => {
-    files = fs.readdirSync(dirPath)
+    const files = fs.readdirSync(dirPath)
 
     arrayOfFiles = arrayOfFiles || []
 
@@ -10,11 +12,11 @@ const getAllFiles = (dirPath, arrayOfFiles) => {
         if (fs.statSync(dirPath + '/' + file).isDirectory()) {
             arrayOfFiles = getAllFiles(dirPath + '/' + file, arrayOfFiles)
         } else {
-            arrayOfFiles.push(path.join(__dirname, dirPath, '/', file))
+            arrayOfFiles.push(path.join(dirPath, '/', file))
         }
     })
 
     return arrayOfFiles
 };
 
-module.exports = { getAllFiles };
+export { getAllFiles };

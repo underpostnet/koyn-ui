@@ -1,4 +1,6 @@
-const winston = require('winston');
+'use strict';
+
+import winston from 'winston';
 // Define your severity levels.
 // With them, You can create log files,
 // see or hide levels based on the running ENV.
@@ -8,7 +10,7 @@ const levels = {
     info: 2,
     http: 3,
     debug: 4,
-}
+};
 
 // This method set the current severity based on
 // the current NODE_ENV: show all the log levels
@@ -18,7 +20,7 @@ const level = () => {
     const env = process.env.NODE_ENV || 'development'
     const isDevelopment = env === 'development'
     return isDevelopment ? 'debug' : 'warn'
-}
+};
 
 // Define different colors for each level.
 // Colors make the log message more visible,
@@ -29,11 +31,11 @@ const colors = {
     info: 'green',
     http: 'magenta',
     debug: 'white',
-}
+};
 
 // Tell winston that you want to link the colors
 // defined above to the severity levels.
-winston.addColors(colors)
+winston.addColors(colors);
 
 // Chose the aspect of your log customizing the log format.
 const format = winston.format.combine(
@@ -71,4 +73,4 @@ const logger = winston.createLogger({
     transports,
 })
 
-module.exports = logger;
+export { logger };

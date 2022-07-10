@@ -2,6 +2,7 @@
   "name": "koyn-ui",
   "description": "Crypto Koyn Graphical Interface",
   "version": "2.0.0",
+  "type": "module",
   "main": "./src/server.js",
   "scripts": {
     "start": "node src/server",
