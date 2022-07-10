@@ -62,7 +62,12 @@ const getKeys = (req, res) => {
         checkKeysFolder();
         return res.status(200).json({
             status: 'success',
-            data: getAllFiles(keyFolder)
+            data: getAllFiles(keyFolder).map( key => {
+                return {
+                    name: key.split('\\')[2].split('-')[0],
+                    date: parseInt(key.split('\\')[2].split('-')[1])
+                }
+            })
         })
     } catch (error) {
         return res.status(500).json({

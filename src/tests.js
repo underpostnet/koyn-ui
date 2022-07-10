@@ -23,6 +23,7 @@ export const tests = tests => {
         {},
         res
     );
+    return;
 
     console.log(color.yellow('test keys.createKey'));
     tests.keysInstance.createKey(

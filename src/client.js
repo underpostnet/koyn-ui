@@ -181,15 +181,36 @@
 
     const TABLE_KEYS = {
         IDS: range(0, maxIdComponent).map(() => 'TABLE_KEYS-' + s4()),
-        renderTable: function () {
+        getKeys: () => new Promise((resolve, reject) => {
+            fetch('/api/keys', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+                .then((res) => res.json())
+                .then((res) => {
+                    if (res.status == 'error') {
+                        console.log('GET ERROR - /keys', res.data);
+                        return reject([]);
+                    }
+                    console.log('GET SUCCESS - /keys', res.data);
+                    return resolve(res.data);
+                }).catch(error => {
+                    console.log('GET ERROR - /keys', error);
+                    return reject([]);
+                });
+        }),
+        renderTable: async function () {
+            const keys = await this.getKeys();
 
+
+            
         },
         init: function () {
-
+            setTimeout(() => this.renderTable());
             return /*html*/`
-            <div class=' in container ${this.IDS[0]}'>
-                    table keys
-            </div>
+            <div class=' in container ${this.IDS[0]}'> </div>
         `;
         }
     };
