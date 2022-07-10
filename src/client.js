@@ -47,6 +47,13 @@
     `
     };
 
+    const renderTable = data => data[0] ? /*html*/`
+        <table>
+            <tr> ${Object.keys(data[0]).map(key =>/*html*/`<th>${key}</th>`).join('')} </tr>
+            ${data.map(row => '<tr>' + Object.keys(data[0]).map(key =>/*html*/`<th>${row[key]}</th>`).join('') + '</tr>').join('')}
+        </table>            
+    `: '';
+
     const maxIdComponent = 50;
     const errorIcon = /*html*/`<i class='fa fa-exclamation-triangle' aria-hidden='true'></i>`;
     const sucessIcon = /*html*/`<i class='fa fa-check-circle' aria-hidden='true'></i>`;
@@ -202,20 +209,20 @@
                 });
         }),
         renderTable: async function () {
-            const keys = await this.getKeys();
-            htmls('.' + this.IDS[0], keys[0] ? /*html*/`
-                <table>
-                    <tr> ${Object.keys(keys[0]).map(key =>/*html*/`<th>${key}</th>`).join('')} </tr>
-
-                    ${keys.map(row => '<tr>' + Object.keys(keys[0]).map(key =>/*html*/`<th>${row[key]}</th>`).join('') + '</tr>').join('')}
-                </table>
-            
-            `: '');
+            s('.' + this.IDS[0]).style.display = 'none';
+            fadeIn(s('.' + this.IDS[1]));
+            const data = await this.getKeys();
+            htmls('.' + this.IDS[0], renderTable(data));
+            s('.' + this.IDS[1]).style.display = 'none';
+            fadeIn(s('.' + this.IDS[0]));
         },
         init: function () {
             setTimeout(() => this.renderTable());
             return /*html*/`
-            <div class='in container ${this.IDS[0]}'></div>
+            <div class='in container'>
+                ${renderSpinner(this.IDS[1], true)}
+                <div class='in ${this.IDS[0]}' style='display: none'></div>
+            </div>
         `;
         }
     };
