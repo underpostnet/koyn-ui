@@ -38,15 +38,19 @@ const CREATE_KEY = {
             };
         });
         return /*html*/`
-                <br><br>
-                <form class='in container'>
+            <div class='in container' style='margin-top: 20px'>
+                KOYN UI v1.0.0
+            </div>
+            <div class='in container'>
+                <form class='in'>
                   ${{ es: 'Contraseña llave publica', en: 'Public Key password' }[s('html').lang]}
                   <input class='${IDS[0]}' type='password' autocomplete='new-password' placeholder=' ...'>
                   <button class='${IDS[1]}'>${{ es: 'Crear llaves', en: 'Create keys' }[s('html').lang]}</button>
                 </form>
-                <div class='in container ${IDS[2]}' style='font-size: 8px; display: none; overflow: auto'>
+                <div class='in ${IDS[2]}' style='font-size: 12px; display: none; overflow: auto'>
                     <pre class='${IDS[3]}'></pre>
                 </div>
+            </div>
         `
     }
 };
