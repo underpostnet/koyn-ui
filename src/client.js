@@ -3,5 +3,53 @@
 const s = _el => document.querySelector(_el);
 const htmls = (_el, _html) => s(_el).innerHTML = _html;
 const append = (_el, _html) => s(_el).insertAdjacentHTML('beforeend', _html);
+const cssId = () => 'underpost-'+(((1+Math.random())*0x10000)|0).toString(16).substring(1);
+const range = (start, end) => {
+    return Array.apply(0, Array(end - start + 1))
+      .map((element, index) => index + start);
+};
 
-append('body', 'hello world');
+
+
+const CREATE_KEY = {
+    init: () => {
+        const IDS = range(1, 4).map(()=>cssId());
+        setTimeout(() => {
+            s('.'+IDS[1]).onclick = e => {
+                e.preventDefault();
+                console.log('onclick', s('.'+IDS[0]).value);
+
+                    fetch('/create-key', {
+                        method: 'POST',
+                        headers: {
+                        'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ passphrase: s('.'+IDS[0]).value }),
+                    })
+                    .then((res) => res.json())
+                    .then((res) => {
+                        console.log('POST - /create-key', res);
+                        htmls('.'+IDS[3], res.privateKey);
+                        s('.'+IDS[2]).style.display = 'block';
+                    });
+
+            };
+        });
+        return /*html*/`
+                <br><br>
+                <form class='in container'>
+                  ${{ es: 'Contraseña llave publica', en: 'Public Key password' }[s('html').lang]}
+                  <input class='${IDS[0]}' type='password' autocomplete='new-password' placeholder=' ...'>
+                  <button class='${IDS[1]}'>${{ es: 'Crear llaves', en: 'Create keys' }[s('html').lang]}</button>
+                </form>
+                <div class='in container ${IDS[2]}' style='display: none'>
+                    <pre class='${IDS[3]}'></pre>
+                </div>
+        `
+    }
+};
+
+
+append('body', CREATE_KEY.init());
+
+

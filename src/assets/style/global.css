@@ -158,3 +158,14 @@ a {
 ::-webkit-scrollbar-thumb:hover {
     background: #555;
 }
+
+.container {
+    max-width: 500px;
+    margin: auto;
+}
+
+div, input, button, form {
+    border: 2px solid yellow;
+    padding: 10px;
+    margin: 10px;
+}
