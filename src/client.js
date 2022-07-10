@@ -163,11 +163,11 @@ const CREATE_KEY = {
                   <input class='in ${this.IDS[0]}' type='password' autocomplete='new-password'>
                   <div class='in error-input ${this.IDS[5]}'></div>
 
-                  <button type="submit" class='${this.IDS[1]}'>
+                  <button type='submit' class='${this.IDS[1]}'>
                          ${renderLang({ es: 'Crear', en: 'Create' })}
                   </button>
-                  <button type="reset" class='${this.IDS[10]}'>
-                         ${renderLang({ es: "Limpiar", en: "Reset" })}
+                  <button type='reset' class='${this.IDS[10]}'>
+                         ${renderLang({ es: 'Limpiar', en: 'Reset' })}
                   </button>
                   <div class='in error-input ${this.IDS[11]}'></div>
                 </form>
