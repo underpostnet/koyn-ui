@@ -302,17 +302,46 @@ const table_keys = {
     }
 };
 
-const menu = {
+const main_menu = {
     init: function () {
-
-
+        const IDS = s4();
+        this[IDS] = range(0, maxIdComponent).map(() => 'main_menu-' + s4());
+        setTimeout(() => {
+            viewPaths.map((path, i) => {
+                if (s('.' + this[IDS][i])) s('.' + this[IDS][i]).onclick = () => {
+                    viewPaths.map((_path, _i) => {
+                        if (_path.path != '/') {
+                            if (_path.path != path.path) {
+                                s(_path.component).style.display = 'none';
+                            } else {
+                                fadeIn(s(_path.component));
+                            }
+                        }
+                    });
+                    s('.' + this[IDS][viewPaths.length]).style.display = 'none';
+                    fadeIn(s('.' + this[IDS][viewPaths.length + 1]));
+                };
+            });
+            s('.' + this[IDS][viewPaths.length + 2]).onclick = () => {
+                s('.' + this[IDS][viewPaths.length + 1]).style.display = 'none';
+                fadeIn(s('.' + this[IDS][viewPaths.length]));
+                viewPaths.map((_path, _i) => {
+                    if (_path.path != '/') {
+                        s(_path.component).style.display = 'none';
+                    }
+                });
+            };
+        });
         return /*html*/`
-                <div class='in container'>
-                ${viewPaths.map(path => path.active ?/*html*/`   
+                <div class='in container ${this[IDS][viewPaths.length]}'>
+                ${viewPaths.map((path, i) => path.active ?/*html*/`   
 
-                <button>${renderLang(path.title)}</button>    
+                <button class='${this[IDS][i]}'>${renderLang(path.title)}</button>    
                  
                  `: '').join('')}
+                </div>
+                <div class='in container ${this[IDS][viewPaths.length + 1]}' style='display: none'>
+                        <button class='${this[IDS][viewPaths.length + 2]}'>${renderLang({ es: 'Menu', en: 'Menu' })}</button> 
                 </div>
         `
     }
@@ -323,7 +352,7 @@ append('body', /*html*/`
         <div class='in container main-title' style='${borderChar(1, 'yellow')}'>
                KOYN UI
         </div>
-        <main_menu>${menu.init()}</main_menu>
+        <main_menu>${main_menu.init()}</main_menu>
         <form_key>${form_key.init()}</form_key>
         <form_key_search>${form_key.init({ mode: 'search' })}</form_key_search>
         <table_keys>${table_keys.init()}</table_keys>
