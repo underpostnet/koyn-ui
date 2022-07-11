@@ -65,7 +65,7 @@ const getKeys = (req, res) => {
             data: getAllFiles(keyFolder).map( key => {
                 return {
                     name: key.split('\\')[2].split('-')[0],
-                    date: parseInt(key.split('\\')[2].split('-')[1])
+                    date: new Date(parseInt(key.split('\\')[2].split('-')[1])).toISOString()
                 }
             }).filter((v,i)=>i%2==0)
         })

@@ -1,7 +1,7 @@
 /* app */
 
 .container {
-    max-width: 500px;
+    max-width: 630px;
     margin: auto;
     border: 3px solid #141414;
     padding: 10px;
@@ -76,4 +76,14 @@ input {
     font-weight: bold;
     color: black;
     font-size: 25px;
+}
+
+th {
+    border-bottom: 3px solid orange;
+    padding: 5px;
+    min-width: 100px;
+}
+.header-table {
+    text-align: center;
+    color: orange;
 }

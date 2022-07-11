@@ -15,7 +15,7 @@
         el.style.opacity = 0;
         el.style.display = display || 'block';
         const fade = () => {
-            var val = parseFloat(el.style.opacity);
+            let val = parseFloat(el.style.opacity);
             if (!((val += .1) > 1)) {
                 el.style.opacity = val;
                 requestAnimationFrame(fade);
@@ -47,10 +47,11 @@
     `
     };
 
-    const renderTable = data => data[0] ? /*html*/`
+    const renderTable = (data, options) => data[0] ? /*html*/`
         <table>
-            <tr> ${Object.keys(data[0]).map(key =>/*html*/`<th>${key}</th>`).join('')} </tr>
-            ${data.map(row => '<tr>' + Object.keys(data[0]).map(key =>/*html*/`<th>${row[key]}</th>`).join('') + '</tr>').join('')}
+            <tr> ${Object.keys(data[0]).map(key =>/*html*/`<th class='header-table'>${key}</th>`).join('')} ${options.actions ? '<th></th>' : ''}</tr>
+            ${data.map(row => '<tr>' + Object.keys(data[0]).map(key =>/*html*/`<th>${row[key]}</th>`).join('')
+        + (options.actions ? options.actions(row) : '') + '</tr>').join('')}
         </table>            
     `: '';
 
@@ -212,7 +213,18 @@
             s('.' + this.IDS[0]).style.display = 'none';
             fadeIn(s('.' + this.IDS[1]));
             const data = await this.getKeys();
-            htmls('.' + this.IDS[0], renderTable(data));
+            htmls('.' + this.IDS[0], renderTable(data, {
+                actions: dataObj => {
+                    return /*html*/`
+                        <th> 
+                             <i class='fa fa-eye' aria-hidden='true'></i> 
+                             <i class='fa fa-trash' aria-hidden='true'></i>
+                             <i class='fa fa-pencil' aria-hidden='true'></i>
+                             <i class='fa fa-download' aria-hidden='true'></i>
+                        </th>
+                    `;
+                }
+            }));
             s('.' + this.IDS[1]).style.display = 'none';
             fadeIn(s('.' + this.IDS[0]));
         },
@@ -230,7 +242,7 @@
 
     append('body', /*html*/`
         <div class='in container main-title' style='${borderChar(1, 'yellow')}'>
-               KOYN UI v1.0.0
+               KOYN UI
         </div>
         ${CREATE_KEY.init()}
         ${TABLE_KEYS.init()}
