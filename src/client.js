@@ -69,11 +69,14 @@
         init: function (options) {
             const IDS = s4();
             this[IDS] = range(0, maxIdComponent).map(() => 'form_key-' + s4());
-            const labelInputs = [8, 9];
-            const inputValueContent = [7, 0];
-            const errorsIdInput = [6, 5];
+            let labelInputs = [8, 9];
+            let inputValueContent = [7, 0];
+            let errorsIdInput = [6, 5];
+            let url = '/api/keys/create-key';
+            let method = 'POST';
             const topLabelInput = '30px';
             const botLabelInput = '0px';
+            const mode = options && options.mode == 'search' ? 'search' : 'default';
 
             setTimeout(() => {
 
@@ -123,11 +126,28 @@
                         s('.' + this[IDS][inputId]).value = '';
                         s('.' + this[IDS][labelInputs[i]]).style.top = topLabelInput;
                     });
-                    generateIdHashInput();
+                    if (mode != 'search') generateIdHashInput();
                 };
 
                 checkAllInput(true);
                 generateIdHashInput();
+
+                switch (mode) {
+                    case 'search':
+                        [13, 9, 0, 5].map(ID => s('.' + this[IDS][ID]).style.display = 'none');
+                        htmls('.' + this[IDS][1], renderLang({ es: 'Buscar', en: 'Search' }));
+                        htmls('.' + this[IDS][14], renderLang({ es: 'Buscar llave Asimetrica', en: 'Search Asymmetric key' }));
+                        s('.' + this[IDS][7]).value = '';
+                        s('.' + this[IDS][7]).disabled = false;
+                        s('.' + this[IDS][8]).style.top = topLabelInput;
+                        labelInputs = [8];
+                        inputValueContent = [7];
+                        errorsIdInput = [6];
+                        url = '/api/key';
+                        method = 'GET';
+                        break;
+                }
+
                 s('.' + this[IDS][10]).onclick = e => setTimeout(() => resetInputs());
                 s('.' + this[IDS][1]).onclick = e => {
                     e.preventDefault();
@@ -139,12 +159,12 @@
                     fadeIn(s('.' + this[IDS][3]));
                     const errorMsgService =
                         renderLang({ es: 'Error en el Servicio', en: 'Service Error' });
-                    fetch('/api/keys/create-key', {
-                        method: 'POST',
+                    fetch(url + (method == 'GET' ? '/' + s('.' + this[IDS][7]).value : ''), {
+                        method,
                         headers: {
                             'Content-Type': 'application/json',
                         },
-                        body: JSON.stringify({
+                        body: method == 'GET' ? undefined : JSON.stringify({
                             passphrase: s('.' + this[IDS][0]).value,
                             hashId: s('.' + this[IDS][7]).value
                         }),
@@ -153,12 +173,20 @@
                         .then((res) => {
                             resetInputs();
                             if (res.status == 'error') {
+                                if (mode == 'search') {
+                                    console.log('GET ERROR - /key', res.data);
+                                    return renderMsgInput(11, renderLang({ es: 'Llaves no encontradas', en: 'Keys not found' }));
+                                }
                                 console.log('POST ERROR - /create-key', res.data);
                                 return renderMsgInput(11, errorMsgService);
                             }
-                            console.log('POST SUCCESS - /create-key', res.data);
                             htmls('.' + this[IDS][2], renderTable(res.data, table_keys.keysActions));
                             fadeIn(s('.' + this[IDS][2]));
+                            if (mode == 'search') {
+                                console.log('GET SUCCESS - /key', res.data);
+                                return renderMsgInput(12, renderLang({ es: 'Llaves encontradas', en: 'Found keys' }), true);
+                            }
+                            console.log('POST SUCCESS - /create-key', res.data);
                             htmls('table_keys', table_keys.init());
                             return renderMsgInput(12, renderLang({ es: 'Las llaves han sido creadas', en: 'The keys have been created' }), true);
                         }).catch(error => {
@@ -176,7 +204,9 @@
             <div class='in container'>
                 <div class='in title'>
                     <i class='fa fa-key' aria-hidden='true'></i>
-                    ${renderLang({ es: 'Crear llaves Asimetricas', en: 'Create Asymmetric keys' })}
+                    <span class='${this[IDS][14]}'>
+                        ${renderLang({ es: 'Crear llaves Asimetricas', en: 'Create Asymmetric keys' })}
+                    </span>
                 </div>
                 <form class='in ${this[IDS][4]}'>
 

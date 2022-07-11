@@ -3,6 +3,7 @@
 import crypto from 'crypto';
 import fs from 'fs';
 import { getAllFiles } from './files.js';
+import { logger } from './logger.js';
 const keyFolder = './data/keys';
 
 const checkKeysFolder = () => {
@@ -71,8 +72,44 @@ const getKeys = (req, res) => {
 
 };
 
+const getKey = (req, res) => {
+    res.setHeader('Content-Type', 'application/json');
+    try {
+        
+        checkKeysFolder();
+
+        logger.info(req.params);
+        
+        const result = getAllFiles(keyFolder).map(key => {
+            return {
+                "Hash ID": key.split('\\')[2]
+            }
+        })
+        .filter((v, i) => i % 2 == 0)
+        .find(v=>v["Hash ID"]==req.params.hashId);
+
+        if(result){
+            return res.status(200).json({
+                status: 'success',
+                data: [result]
+            });
+        }
+        return res.status(400).json({
+            status: 'error',
+            data: 'hashId does not exist'
+        });
+    } catch (error) {
+        return res.status(500).json({
+            status: 'error',
+            data: error.message,
+        });
+    }
+
+};
+
 export const keys = app => {
     app.post('/api/keys/create-key', createKey);
     app.get('/api/keys', getKeys);
+    app.get('/api/key/:hashId', getKey);
     return { createKey, getKeys };
 };
