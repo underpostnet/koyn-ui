@@ -120,7 +120,7 @@
 
                 const resetInputs = () => {
                     s('.' + this[IDS][3]).style.display = 'none';
-                    fadeIn(s('.' + this[IDS][4]));
+                    fadeIn(s('.' + this[IDS][15]));
                     [12, 5, 6, 11].map(errorId => s('.' + this[IDS][errorId]).style.display = 'none');
                     inputValueContent.map((inputId, i) => {
                         s('.' + this[IDS][inputId]).value = '';
@@ -187,7 +187,7 @@
                                 return renderMsgInput(12, renderLang({ es: 'Llaves encontradas', en: 'Found keys' }), true);
                             }
                             console.log('POST SUCCESS - /create-key', res.data);
-                            // htmls('table_keys', table_keys.init());
+                            htmls('table_keys', table_keys.init());
                             return renderMsgInput(12, renderLang({ es: 'Las llaves han sido creadas', en: 'The keys have been created' }), true);
                         }).catch(error => {
                             console.log('POST ERROR - /create-key', error);
@@ -198,6 +198,13 @@
                 s('.' + this[IDS][13]).onclick = e => {
                     e.preventDefault();
                     generateIdHashInput();
+                };
+                s('.' + this[IDS][15]).onclick = e => {
+                    e.preventDefault();
+                    resetInputs();
+                    s('.' + this[IDS][2]).style.display = 'none';
+                    s('.' + this[IDS][15]).style.display = 'none';
+                    fadeIn(s('.' + this[IDS][4]));
                 };
             });
             return /*html*/`
@@ -230,7 +237,10 @@
                   <div class='in error-input ${this[IDS][11]}'></div>
                 </form>
                 <div class='in ${this[IDS][2]}' style='display: none;'></div>
-                <div class='in success-input ${this[IDS][12]}'></div>                
+                <div class='in success-input ${this[IDS][12]}'></div>
+                <button type='reset' class='${this[IDS][15]}' style='display: none'>
+                    ${renderLang({ es: 'Crear nueva llave', en: 'Create new Key' })}
+                </button>               
                 ${renderSpinner(this[IDS][3])}
             </div>
         `
@@ -294,13 +304,23 @@
         }
     };
 
+const menu = {
+    init: function(){
+
+
+        return /*html*/`
+        
+        `
+    }
+};
+
 
     append('body', /*html*/`
         <div class='in container main-title' style='${borderChar(1, 'yellow')}'>
                KOYN UI
         </div>
-        ${form_key.init()}
-        ${form_key.init({ mode: 'search' })}
+        <form_key>${form_key.init()}</table_keys>
+        <form_key_search>${form_key.init({ mode: 'search' })}</form_key_search>
         <table_keys>${table_keys.init()}</table_keys>
         
 
