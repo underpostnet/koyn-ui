@@ -187,7 +187,7 @@
                                 return renderMsgInput(12, renderLang({ es: 'Llaves encontradas', en: 'Found keys' }), true);
                             }
                             console.log('POST SUCCESS - /create-key', res.data);
-                            htmls('table_keys', table_keys.init());
+                            // htmls('table_keys', table_keys.init());
                             return renderMsgInput(12, renderLang({ es: 'Las llaves han sido creadas', en: 'The keys have been created' }), true);
                         }).catch(error => {
                             console.log('POST ERROR - /create-key', error);
@@ -303,8 +303,10 @@
         </div>
         <form_key>${form_key.init()}</form_key>
         <form_key_search>${form_key.init({ mode: 'search' })}</form_key_search>
-        <table_keys>${table_keys.init()}</table_keys>
+        
 
 `);
 
 })();
+
+// <table_keys>${table_keys.init()}</table_keys>
