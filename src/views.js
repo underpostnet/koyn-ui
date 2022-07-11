@@ -25,8 +25,16 @@ const viewPaths = [
         title: ''
     },
     {
-        path: '/create-key',
+        path: '/keys/create',
         title: 'Create Key'
+    },
+    {
+        path: '/keys/search',
+        title: 'Search Key'
+    },
+    {
+        path: '/keys/list',
+        title: 'Keys List'
     }
 ];
 
@@ -49,7 +57,13 @@ const renderView = dataView => /*html*/`
                     <link rel='stylesheet' href='/fontawesome/all.min.css'>
                 </head>
                 <body>                  
-                    <script>${fs.readFileSync(dataView.router, dataView.charset)}</script>
+                    <script>
+                            (() => {
+                                const viewPaths = JSON.parse('${JSON.stringify(viewPaths)}');
+                                console.log('viewPaths', viewPaths);
+                                ${fs.readFileSync(dataView.router, dataView.charset)}
+                            })();
+                    </script>
                 </body>
             </html>
 
