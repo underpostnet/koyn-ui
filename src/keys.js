@@ -39,11 +39,7 @@ const createKey = (req, res) => {
         // https://restfulapi.net/http-status-codes/
         return res.status(200).json({
             status: 'success',
-            data: {
-                hashId: req.body.hashId,
-                publicKey,
-                privateKey
-            }
+            data: [{ "Hash ID": req.body.hashId }]
         });
     } catch (error) {
         return res.status(500).json({
@@ -60,11 +56,11 @@ const getKeys = (req, res) => {
         checkKeysFolder();
         return res.status(200).json({
             status: 'success',
-            data: getAllFiles(keyFolder).map( key => {
+            data: getAllFiles(keyFolder).map(key => {
                 return {
                     "Hash ID": key.split('\\')[2]
                 }
-            }).filter((v,i)=>i%2==0)
+            }).filter((v, i) => i % 2 == 0)
         })
     } catch (error) {
         return res.status(500).json({

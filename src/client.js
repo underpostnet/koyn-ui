@@ -155,7 +155,7 @@
                                 return renderMsgInput(11, errorMsgService);
                             }
                             console.log('POST SUCCESS - /create-key', res.data);
-                            htmls('.' + this.IDS[2], res.data.privateKey);
+                            htmls('.' + this.IDS[2], renderTable(res.data, TABLE_KEYS.keysActions));
                             fadeIn(s('.' + this.IDS[2]));
                             return renderMsgInput(12, renderLang({ es: 'Las llaves han sido creadas', en: 'The keys have been created' }), true);
                         }).catch(error => {
@@ -194,11 +194,10 @@
                   <button type='reset' class='${this.IDS[10]}' style='display: none'>
                          ${renderLang({ es: 'Limpiar', en: 'Reset' })}
                   </button>
-                  <div class='in success-input ${this.IDS[12]}'></div>
                   <div class='in error-input ${this.IDS[11]}'></div>
                 </form>
-                <pre class='in ${this.IDS[2]}' style='display: none;'></pre>
-                
+                <div class='in ${this.IDS[2]}' style='display: none;'></div>
+                <div class='in success-input ${this.IDS[12]}'></div>                
                 ${renderSpinner(this.IDS[3])}
             </div>
         `
@@ -232,18 +231,7 @@
             s('.' + this.IDS[0]).style.display = 'none';
             fadeIn(s('.' + this.IDS[1]));
             const data = await this.getKeys();
-            htmls('.' + this.IDS[0], renderTable(data, {
-                actions: dataObj => {
-                    return /*html*/`
-                        <th> 
-                             <i class='fa fa-eye' aria-hidden='true'></i> 
-                             <i class='fa fa-trash' aria-hidden='true'></i>
-                             <i class='fa fa-pencil' aria-hidden='true'></i>
-                             <i class='fa fa-download' aria-hidden='true'></i>
-                        </th>
-                    `;
-                }
-            }));
+            htmls('.' + this.IDS[0], renderTable(data, this.keysActions));
             s('.' + this.IDS[1]).style.display = 'none';
             fadeIn(s('.' + this.IDS[0]));
         },
@@ -259,6 +247,18 @@
                 <div class='in ${this.IDS[0]}' style='display: none'></div>
             </div>
         `;
+        },
+        keysActions: {
+            actions: dataObj => {
+                return /*html*/`
+                    <th> 
+                         <i class='fa fa-eye' aria-hidden='true'></i> 
+                         <i class='fa fa-trash' aria-hidden='true'></i>
+                         <i class='fa fa-pencil' aria-hidden='true'></i>
+                         <i class='fa fa-download' aria-hidden='true'></i>
+                    </th>
+                `;
+            }
         }
     };
 
