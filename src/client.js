@@ -65,9 +65,10 @@
     const errorIcon = /*html*/`<i class='fa fa-exclamation-triangle' aria-hidden='true'></i>`;
     const sucessIcon = /*html*/`<i class='fa fa-check-circle' aria-hidden='true'></i>`;
 
-    const CREATE_KEY = {
-        IDS: range(0, maxIdComponent).map(() => 'CREATE_KEY-' + s4()),
-        init: function () {
+    const form_key = {
+        init: function (options) {
+            const IDS = s4();
+            this[IDS] = range(0, maxIdComponent).map(() => 'form_key-' + s4());
             const labelInputs = [8, 9];
             const inputValueContent = [7, 0];
             const errorsIdInput = [6, 5];
@@ -76,65 +77,66 @@
 
             setTimeout(() => {
 
-                const renderMsgInput = (IDS, MSG, STATUS) => {
-                    htmls('.' + this.IDS[IDS], (STATUS ? sucessIcon : errorIcon) + MSG);
-                    fadeIn(s('.' + this.IDS[IDS]));
+                const renderMsgInput = (ID, MSG, STATUS) => {
+                    htmls('.' + this[IDS][ID], (STATUS ? sucessIcon : errorIcon) + MSG);
+                    fadeIn(s('.' + this[IDS][ID]));
                 };
 
                 const checkInput = (i, inputId) => {
-                    if (s('.' + this.IDS[inputId]).value == '') {
-                        s('.' + this.IDS[labelInputs[i]]).style.top = topLabelInput;
+                    if (s('.' + this[IDS][inputId]).value == '') {
+                        s('.' + this[IDS][labelInputs[i]]).style.top = topLabelInput;
                         renderMsgInput(errorsIdInput[i], renderLang({ es: 'Campo vacio', en: 'Empty Field' }));
                         return false;
                     }
-                    s('.' + this.IDS[labelInputs[i]]).style.top = botLabelInput;
-                    s('.' + this.IDS[errorsIdInput[i]]).style.display = 'none';
+                    s('.' + this[IDS][labelInputs[i]]).style.top = botLabelInput;
+                    s('.' + this[IDS][errorsIdInput[i]]).style.display = 'none';
                     return true;
                 };
 
                 const checkAllInput = (setEvent) => inputValueContent.map((inputId, i) => {
                     if (setEvent) {
-                        s('.' + this.IDS[inputId]).onblur = () =>
+                        s('.' + this[IDS][inputId]).onblur = () =>
                             checkInput(i, inputId);
-                        s('.' + this.IDS[inputId]).oninput = () =>
+                        s('.' + this[IDS][inputId]).oninput = () =>
                             checkInput(i, inputId);
-                        s('.' + this.IDS[labelInputs[i]]).onclick = () =>
-                            s('.' + this.IDS[inputId]).focus();
-                        s('.' + this.IDS[inputId]).onclick = () =>
-                            s('.' + this.IDS[labelInputs[i]]).style.top = botLabelInput;
-                        s('.' + this.IDS[inputId]).onfocus = () =>
-                            s('.' + this.IDS[labelInputs[i]]).style.top = botLabelInput;
+                        s('.' + this[IDS][labelInputs[i]]).onclick = () =>
+                            s('.' + this[IDS][inputId]).focus();
+                        s('.' + this[IDS][inputId]).onclick = () =>
+                            s('.' + this[IDS][labelInputs[i]]).style.top = botLabelInput;
+                        s('.' + this[IDS][inputId]).onfocus = () =>
+                            s('.' + this[IDS][labelInputs[i]]).style.top = botLabelInput;
                         return;
                     };
-                    return s('.' + this.IDS[inputId]).oninput();
+                    return s('.' + this[IDS][inputId]).oninput();
                 }).filter(x => x == false).length === 0;
 
                 const generateIdHashInput = () => {
-                    s('.' + this.IDS[7]).value = getHash();
-                    s('.' + this.IDS[7]).oninput();
+                    s('.' + this[IDS][7]).value = getHash();
+                    s('.' + this[IDS][7]).oninput();
                 };
 
                 const resetInputs = () => {
-                    s('.' + this.IDS[3]).style.display = 'none';
-                    fadeIn(s('.' + this.IDS[4]));
-                    [12, 5, 6, 11].map(errorId => s('.' + this.IDS[errorId]).style.display = 'none');
+                    s('.' + this[IDS][3]).style.display = 'none';
+                    fadeIn(s('.' + this[IDS][4]));
+                    [12, 5, 6, 11].map(errorId => s('.' + this[IDS][errorId]).style.display = 'none');
                     inputValueContent.map((inputId, i) => {
-                        s('.' + this.IDS[inputId]).value = '';
-                        s('.' + this.IDS[labelInputs[i]]).style.top = topLabelInput;
+                        s('.' + this[IDS][inputId]).value = '';
+                        s('.' + this[IDS][labelInputs[i]]).style.top = topLabelInput;
                     });
                     generateIdHashInput();
                 };
 
                 checkAllInput(true);
                 generateIdHashInput();
-                s('.' + this.IDS[10]).onclick = e => setTimeout(() => resetInputs());
-                s('.' + this.IDS[1]).onclick = e => {
+                s('.' + this[IDS][10]).onclick = e => setTimeout(() => resetInputs());
+                s('.' + this[IDS][1]).onclick = e => {
                     e.preventDefault();
-                    console.log('onclick', s('.' + this.IDS[0]).value);
+                    console.log('onclick', s('.' + this[IDS][0]).value);
                     if (!checkAllInput()) return;
-                    s('.' + this.IDS[2]).style.display = 'none';
-                    s('.' + this.IDS[4]).style.display = 'none';
-                    fadeIn(s('.' + this.IDS[3]));
+                    s('.' + this[IDS][2]).style.display = 'none';
+                    s('.' + this[IDS][4]).style.display = 'none';
+                    s('.' + this[IDS][12]).style.display = 'none';
+                    fadeIn(s('.' + this[IDS][3]));
                     const errorMsgService =
                         renderLang({ es: 'Error en el Servicio', en: 'Service Error' });
                     fetch('/api/keys/create-key', {
@@ -143,8 +145,8 @@
                             'Content-Type': 'application/json',
                         },
                         body: JSON.stringify({
-                            passphrase: s('.' + this.IDS[0]).value,
-                            hashId: s('.' + this.IDS[7]).value
+                            passphrase: s('.' + this[IDS][0]).value,
+                            hashId: s('.' + this[IDS][7]).value
                         }),
                     })
                         .then((res) => res.json())
@@ -155,8 +157,9 @@
                                 return renderMsgInput(11, errorMsgService);
                             }
                             console.log('POST SUCCESS - /create-key', res.data);
-                            htmls('.' + this.IDS[2], renderTable(res.data, TABLE_KEYS.keysActions));
-                            fadeIn(s('.' + this.IDS[2]));
+                            htmls('.' + this[IDS][2], renderTable(res.data, table_keys.keysActions));
+                            fadeIn(s('.' + this[IDS][2]));
+                            htmls('table_keys', table_keys.init());
                             return renderMsgInput(12, renderLang({ es: 'Las llaves han sido creadas', en: 'The keys have been created' }), true);
                         }).catch(error => {
                             console.log('POST ERROR - /create-key', error);
@@ -164,7 +167,7 @@
                         });
 
                 };
-                s('.' + this.IDS[13]).onclick = e => {
+                s('.' + this[IDS][13]).onclick = e => {
                     e.preventDefault();
                     generateIdHashInput();
                 };
@@ -175,38 +178,37 @@
                     <i class='fa fa-key' aria-hidden='true'></i>
                     ${renderLang({ es: 'Crear llaves Asimetricas', en: 'Create Asymmetric keys' })}
                 </div>
-                <form class='in ${this.IDS[4]}'>
+                <form class='in ${this[IDS][4]}'>
 
-                  <div class='in label ${this.IDS[8]}' style='top: ${topLabelInput}'>${renderLang({ es: 'Hash ID', en: 'Hash ID' })}</div>
-                  <input class='in ${this.IDS[7]}' type='text' disabled>
-                  <div class='in error-input ${this.IDS[6]}'></div>
+                  <div class='in label ${this[IDS][8]}' style='top: ${topLabelInput}'>${renderLang({ es: 'Hash ID', en: 'Hash ID' })}</div>
+                  <input class='in ${this[IDS][7]}' type='text' disabled>
+                  <div class='in error-input ${this[IDS][6]}'></div>
 
-                  <div class='in label ${this.IDS[9]}' style='top: ${topLabelInput}'>${renderLang({ es: 'Contraseña', en: 'Password' })}</div>
-                  <input class='in ${this.IDS[0]}' type='password' autocomplete='new-password'>
-                  <div class='in error-input ${this.IDS[5]}'></div>
+                  <div class='in label ${this[IDS][9]}' style='top: ${topLabelInput}'>${renderLang({ es: 'Contraseña', en: 'Password' })}</div>
+                  <input class='in ${this[IDS][0]}' type='password' autocomplete='new-password'>
+                  <div class='in error-input ${this[IDS][5]}'></div>
                 
-                  <button type='submit' class='${this.IDS[1]}'>
+                  <button type='submit' class='${this[IDS][1]}'>
                          ${renderLang({ es: 'Crear', en: 'Create' })}
                   </button>
-                  <button class='${this.IDS[13]}'>
+                  <button class='${this[IDS][13]}'>
                          ${renderLang({ es: 'Generar Hash ID', en: 'Generate Hash ID' })}
                   </button>
-                  <button type='reset' class='${this.IDS[10]}' style='display: none'>
+                  <button type='reset' class='${this[IDS][10]}' style='display: none'>
                          ${renderLang({ es: 'Limpiar', en: 'Reset' })}
                   </button>
-                  <div class='in error-input ${this.IDS[11]}'></div>
+                  <div class='in error-input ${this[IDS][11]}'></div>
                 </form>
-                <div class='in ${this.IDS[2]}' style='display: none;'></div>
-                <div class='in success-input ${this.IDS[12]}'></div>                
-                ${renderSpinner(this.IDS[3])}
+                <div class='in ${this[IDS][2]}' style='display: none;'></div>
+                <div class='in success-input ${this[IDS][12]}'></div>                
+                ${renderSpinner(this[IDS][3])}
             </div>
         `
         }
     };
 
 
-    const TABLE_KEYS = {
-        IDS: range(0, maxIdComponent).map(() => 'TABLE_KEYS-' + s4()),
+    const table_keys = {
         getKeys: () => new Promise((resolve, reject) => {
             fetch('/api/keys', {
                 method: 'GET',
@@ -227,24 +229,26 @@
                     return reject([]);
                 });
         }),
-        renderTable: async function () {
-            s('.' + this.IDS[0]).style.display = 'none';
-            fadeIn(s('.' + this.IDS[1]));
+        renderTable: async function (IDS) {
+            s('.' + this[IDS][0]).style.display = 'none';
+            fadeIn(s('.' + this[IDS][1]));
             const data = await this.getKeys();
-            htmls('.' + this.IDS[0], renderTable(data, this.keysActions));
-            s('.' + this.IDS[1]).style.display = 'none';
-            fadeIn(s('.' + this.IDS[0]));
+            htmls('.' + this[IDS][0], renderTable(data, this.keysActions));
+            s('.' + this[IDS][1]).style.display = 'none';
+            fadeIn(s('.' + this[IDS][0]));
         },
         init: function () {
-            setTimeout(() => this.renderTable());
+            const IDS = s4();
+            this[IDS] = range(0, maxIdComponent).map(() => 'table_keys-' + s4());
+            setTimeout(() => this.renderTable(IDS));
             return /*html*/`
             <div class='in container'>
                 <div class='in title'>
                     <i class='fa fa-key' aria-hidden='true'></i>
                     ${renderLang({ es: 'Lista de llaves Asimetricas', en: 'Asymmetric keys List' })}
                 </div>
-                ${renderSpinner(this.IDS[1])}
-                <div class='in ${this.IDS[0]}' style='display: none'></div>
+                ${renderSpinner(this[IDS][1])}
+                <div class='in ${this[IDS][0]}' style='display: none'></div>
             </div>
         `;
         },
@@ -267,8 +271,9 @@
         <div class='in container main-title' style='${borderChar(1, 'yellow')}'>
                KOYN UI
         </div>
-        ${CREATE_KEY.init()}
-        ${TABLE_KEYS.init()}
+        <form_key>${form_key.init()}</form_key>
+        <form_key_search>${form_key.init({ mode: 'search' })}</form_key_search>
+        <table_keys>${table_keys.init()}</table_keys>
 
 `);
 
