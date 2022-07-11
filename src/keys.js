@@ -32,17 +32,15 @@ const createKey = (req, res) => {
 
         checkKeysFolder();
 
-        const folderName = req.body.name + '-' + (+ new Date());
-
-        fs.mkdirSync(`./data/keys/${folderName}`);
-        fs.writeFileSync(`./data/keys/${folderName}/public.pem`, publicKey, 'utf8');
-        fs.writeFileSync(`./data/keys/${folderName}/private.pem`, privateKey, 'utf8');
-
+        fs.mkdirSync(`./data/keys/${req.body.hashId}`);
+        fs.writeFileSync(`./data/keys/${req.body.hashId}/public.pem`, publicKey, 'utf8');
+        fs.writeFileSync(`./data/keys/${req.body.hashId}/private.pem`, privateKey, 'utf8');
 
         // https://restfulapi.net/http-status-codes/
         return res.status(200).json({
             status: 'success',
             data: {
+                hashId: req.body.hashId,
                 publicKey,
                 privateKey
             }
@@ -64,8 +62,7 @@ const getKeys = (req, res) => {
             status: 'success',
             data: getAllFiles(keyFolder).map( key => {
                 return {
-                    name: key.split('\\')[2].split('-')[0],
-                    date: new Date(parseInt(key.split('\\')[2].split('-')[1])).toISOString()
+                    "Hash ID": key.split('\\')[2]
                 }
             }).filter((v,i)=>i%2==0)
         })

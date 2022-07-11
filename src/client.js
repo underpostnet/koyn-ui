@@ -6,6 +6,12 @@
     const htmls = (_el, _html) => s(_el).innerHTML = _html;
     const append = (_el, _html) => s(_el).insertAdjacentHTML('beforeend', _html);
     const s4 = () => (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+    const getHash = () => s4() + s4() +
+        '-' + s4() +
+        '-' + s4() +
+        '-' + s4() +
+        '-' + s4() + s4() + s4();
+
     const range = (start, end) => {
         return Array.apply(0, Array(end - start + 1))
             .map((element, index) => index + start);
@@ -103,6 +109,11 @@
                     return s('.' + this.IDS[inputId]).oninput();
                 }).filter(x => x == false).length === 0;
 
+                const generateIdHashInput = () => {
+                    s('.' + this.IDS[7]).value = getHash();
+                    s('.' + this.IDS[7]).oninput();
+                };
+
                 const resetInputs = () => {
                     s('.' + this.IDS[3]).style.display = 'none';
                     fadeIn(s('.' + this.IDS[4]));
@@ -111,9 +122,11 @@
                         s('.' + this.IDS[inputId]).value = '';
                         s('.' + this.IDS[labelInputs[i]]).style.top = topLabelInput;
                     });
+                    generateIdHashInput();
                 };
 
                 checkAllInput(true);
+                generateIdHashInput();
                 s('.' + this.IDS[10]).onclick = e => setTimeout(() => resetInputs());
                 s('.' + this.IDS[1]).onclick = e => {
                     e.preventDefault();
@@ -131,7 +144,7 @@
                         },
                         body: JSON.stringify({
                             passphrase: s('.' + this.IDS[0]).value,
-                            name: s('.' + this.IDS[7]).value
+                            hashId: s('.' + this.IDS[7]).value
                         }),
                     })
                         .then((res) => res.json())
@@ -151,28 +164,34 @@
                         });
 
                 };
+                s('.' + this.IDS[13]).onclick = e => {
+                    e.preventDefault();
+                    generateIdHashInput();
+                };
             });
             return /*html*/`
             <div class='in container'>
+                <div class='in title'>
+                    <i class='fa fa-key' aria-hidden='true'></i>
+                    ${renderLang({ es: 'Crear llaves Asimetricas', en: 'Create Asymmetric keys' })}
+                </div>
                 <form class='in ${this.IDS[4]}'>
 
-                   <div class='in title'>
-                       <i class='fa fa-key' aria-hidden='true'></i>
-                       ${renderLang({ es: 'Crear llaves', en: 'Create keys' })}
-                   </div>
-
-                  <div class='in label ${this.IDS[8]}' style='top: ${topLabelInput}'>${renderLang({ es: 'Nombre', en: 'Name' })}</div>
-                  <input class='in ${this.IDS[7]}' type='text'>
+                  <div class='in label ${this.IDS[8]}' style='top: ${topLabelInput}'>${renderLang({ es: 'Hash ID', en: 'Hash ID' })}</div>
+                  <input class='in ${this.IDS[7]}' type='text' disabled>
                   <div class='in error-input ${this.IDS[6]}'></div>
 
                   <div class='in label ${this.IDS[9]}' style='top: ${topLabelInput}'>${renderLang({ es: 'Contraseña', en: 'Password' })}</div>
                   <input class='in ${this.IDS[0]}' type='password' autocomplete='new-password'>
                   <div class='in error-input ${this.IDS[5]}'></div>
-
+                
                   <button type='submit' class='${this.IDS[1]}'>
                          ${renderLang({ es: 'Crear', en: 'Create' })}
                   </button>
-                  <button type='reset' class='${this.IDS[10]}'>
+                  <button class='${this.IDS[13]}'>
+                         ${renderLang({ es: 'Generar Hash ID', en: 'Generate Hash ID' })}
+                  </button>
+                  <button type='reset' class='${this.IDS[10]}' style='display: none'>
                          ${renderLang({ es: 'Limpiar', en: 'Reset' })}
                   </button>
                   <div class='in success-input ${this.IDS[12]}'></div>
@@ -232,6 +251,10 @@
             setTimeout(() => this.renderTable());
             return /*html*/`
             <div class='in container'>
+                <div class='in title'>
+                    <i class='fa fa-key' aria-hidden='true'></i>
+                    ${renderLang({ es: 'Lista de llaves Asimetricas', en: 'Asymmetric keys List' })}
+                </div>
                 ${renderSpinner(this.IDS[1])}
                 <div class='in ${this.IDS[0]}' style='display: none'></div>
             </div>
