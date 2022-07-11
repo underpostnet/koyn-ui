@@ -286,8 +286,8 @@
             actions: dataObj => {
                 return /*html*/`
                     <th style='text-align: left'> 
-                         <li><a href='#'>Descargar Archivos Pem</a></li>
-                         <li><a href='#'>Copiar Llave Publica para Cyberia Online</a></li>
+                         <button>Descargar Archivos Pem</button>
+                         <button>Copiar Llave Publica para Cyberia Online</button>
                     </th>
                 `;
             }
@@ -301,6 +301,7 @@
         </div>
         ${form_key.init()}
         ${form_key.init({ mode: 'search' })}
+        <table_keys>${table_keys.init()}</table_keys>
         
 
 `);
