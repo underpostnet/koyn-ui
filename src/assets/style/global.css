@@ -82,7 +82,6 @@ input {
 th {
     border-bottom: 3px solid orange;
     padding: 5px;
-    min-width: 100px;
 }
 .header-table {
     text-align: center;

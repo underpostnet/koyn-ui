@@ -285,11 +285,9 @@
         keysActions: {
             actions: dataObj => {
                 return /*html*/`
-                    <th> 
-                         <i class='fa fa-eye' aria-hidden='true'></i> 
-                         <i class='fa fa-trash' aria-hidden='true'></i>
-                         <i class='fa fa-pencil' aria-hidden='true'></i>
-                         <i class='fa fa-download' aria-hidden='true'></i>
+                    <th style='text-align: left'> 
+                         <li><a href='#'>Descargar Archivos Pem</a></li>
+                         <li><a href='#'>Copiar Llave Publica para Cyberia Online</a></li>
                     </th>
                 `;
             }
@@ -301,12 +299,12 @@
         <div class='in container main-title' style='${borderChar(1, 'yellow')}'>
                KOYN UI
         </div>
-        <form_key>${form_key.init()}</form_key>
-        <form_key_search>${form_key.init({ mode: 'search' })}</form_key_search>
+        ${form_key.init()}
+        ${form_key.init({ mode: 'search' })}
         
 
 `);
 
 })();
 
-// <table_keys>${table_keys.init()}</table_keys>
+//  <table_keys>${table_keys.init()}</table_keys>
