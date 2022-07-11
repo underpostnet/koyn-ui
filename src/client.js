@@ -311,7 +311,7 @@ this.main_menu = {
                 if (s('.' + this[IDS][i])) s('.' + this[IDS][i]).onclick = () => {
                     viewPaths.map((_path, _i) => {
                         if (_path.path != '/') {
-                            if (_path.path != path.path && !_path.fix) {
+                            if (_path.path != path.path && !_path.nohome) {
                                 s(_path.component).style.display = 'none';
                             } else {
                                 fadeIn(s(_path.component));
@@ -355,7 +355,7 @@ append('body', /*html*/`
                KOYN UI
         </div>
         ${viewPaths.map(path =>/*html*/`
-        <${path.component}>${this[path.options ? path.options.origin : path.component].init()}</${path.component}>
+        <${path.component}>${this[path.options ? path.options.origin : path.component].init(path.options)}</${path.component}>
         `).join('')}
        
         

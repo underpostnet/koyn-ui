@@ -28,7 +28,7 @@ const viewPaths = [
         options: false,
         menu: false,
         home: false,
-        fix: false,
+        nohome: false,
         render: false
     },
     {
@@ -37,9 +37,9 @@ const viewPaths = [
         component: 'form_key',
         options: false,
         menu: false,
-        home: false,
-        fix: false,
-        render: false
+        home: true,
+        nohome: false,
+        render: true
     },
     {
         path: '/keys/search',
@@ -47,9 +47,9 @@ const viewPaths = [
         component: 'form_key_search',
         options: { origin: 'form_key', mode: 'search' },
         menu: false,
-        home: false,
-        fix: false,
-        render: false
+        home: true,
+        nohome: false,
+        render: true
     },
     {
         path: '/keys/list',
@@ -58,7 +58,7 @@ const viewPaths = [
         options: false,
         menu: false,
         home: false,
-        fix: false,
+        nohome: false,
         render: false
     }
 ];
