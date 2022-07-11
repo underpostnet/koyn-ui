@@ -307,7 +307,13 @@ const menu = {
 
 
         return /*html*/`
-        
+                <div class='in container'>
+                ${viewPaths.map(path => path.active ?/*html*/`   
+
+                <button>${renderLang(path.title)}</button>    
+                 
+                 `: '').join('')}
+                </div>
         `
     }
 };
@@ -317,7 +323,8 @@ append('body', /*html*/`
         <div class='in container main-title' style='${borderChar(1, 'yellow')}'>
                KOYN UI
         </div>
-        <form_key>${form_key.init()}</table_keys>
+        <main_menu>${menu.init()}</main_menu>
+        <form_key>${form_key.init()}</form_key>
         <form_key_search>${form_key.init({ mode: 'search' })}</form_key_search>
         <table_keys>${table_keys.init()}</table_keys>
         

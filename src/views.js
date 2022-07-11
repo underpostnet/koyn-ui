@@ -22,19 +22,27 @@ const viewMetaData = {
 const viewPaths = [
     {
         path: '/',
-        title: ''
+        title: '',
+        component: 'main_menu',
+        active: false
     },
     {
         path: '/keys/create',
-        title: 'Create Key'
+        title: { en:'Create Key', es: 'Crear Llaves'},
+        component: 'form_key',
+        active: true
     },
     {
         path: '/keys/search',
-        title: 'Search Key'
+        title: { en:'Search Key', es: 'Buscar Llave'},
+        component: 'form_key_search',
+        active: true
     },
     {
         path: '/keys/list',
-        title: 'Keys List'
+        title: { en:'Keys List', es: 'Listar Llave'},
+        component: 'table_keys',
+        active: true
     }
 ];
 
@@ -46,13 +54,14 @@ const renderView = dataView => /*html*/`
             <html dir='${dataView.dir}' lang='${dataView.lang}'>
                 <head>
                     <meta charset='${dataView.charset}'>
-                    <title> ${dataView.title != '' ? dataView.title + ' - ' : ''}${title} </title>
+                    <title> ${dataView.title[dataView.lang] != '' ? dataView.title[dataView.lang] + ' - ' : ''}${title} </title>
                     <link rel='icon' type='${dataView.favicon.type}' href='${dataView.favicon.path}'>
                     <meta name='viewport' content='initial-scale=1.0, maximum-scale=1.0, user-scalable=0'>
                     <style>
                         ${fs.readFileSync('./src/assets/style/base.css', dataView.charset)}
                         ${fs.readFileSync('./src/assets/style/global.css', dataView.charset)}
                         ${fs.readFileSync('./src/assets/style/spinner.css', dataView.charset)}
+                        ${viewPaths.map(path=>path.path!='/'?path.component+`{ display: none; }`:'').join('')}
                     </style>
                     <link rel='stylesheet' href='/fontawesome/all.min.css'>
                 </head>
