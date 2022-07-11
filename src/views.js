@@ -19,30 +19,47 @@ const viewMetaData = {
     router: './src/client.js'
 };
 
+// module render group
 const viewPaths = [
     {
         path: '/',
-        title: { en:'', es: ''},
+        title: { en: '', es: '' },
         component: 'main_menu',
-        menu: false
+        options: false,
+        menu: false,
+        home: true,
+        fix: false,
+        render: true
     },
     {
         path: '/keys/create',
-        title: { en:'Create Key', es: 'Crear Llaves'},
+        title: { en: 'Create Key', es: 'Crear Llaves' },
         component: 'form_key',
-        menu: true
+        options: false,
+        menu: true,
+        home: false,
+        fix: false,
+        render: true
     },
     {
         path: '/keys/search',
-        title: { en:'Search Key', es: 'Buscar Llave'},
+        title: { en: 'Search Key', es: 'Buscar Llave' },
         component: 'form_key_search',
-        menu: true
+        options: { origin: 'form_key', mode: 'search' },
+        menu: true,
+        home: false,
+        fix: false,
+        render: true
     },
     {
         path: '/keys/list',
-        title: { en:'Keys List', es: 'Listar Llave'},
+        title: { en: 'Keys List', es: 'Listar Llave' },
         component: 'table_keys',
-        menu: true
+        options: false,
+        menu: false,
+        home: true,
+        fix: true,
+        render: true
     }
 ];
 
@@ -61,14 +78,14 @@ const renderView = dataView => /*html*/`
                         ${fs.readFileSync('./src/assets/style/base.css', dataView.charset)}
                         ${fs.readFileSync('./src/assets/style/global.css', dataView.charset)}
                         ${fs.readFileSync('./src/assets/style/spinner.css', dataView.charset)}
-                        ${viewPaths.map(path=>path.path!='/'?path.component+`{ display: none; }`:'').join('')}
+                        ${viewPaths.filter(path => path.render).map(path => !path.home ? path.component + `{ display: none; }` : '').join('')}
                     </style>
                     <link rel='stylesheet' href='/fontawesome/all.min.css'>
                 </head>
                 <body>                  
                     <script>
-                            (() => {
-                                const viewPaths = JSON.parse('${JSON.stringify(viewPaths)}');
+                            (function(){
+                                const viewPaths = JSON.parse('${JSON.stringify(viewPaths.filter(path => path.render))}');
                                 console.log('viewPaths', viewPaths);
                                 ${fs.readFileSync(dataView.router, dataView.charset)}
                             })();

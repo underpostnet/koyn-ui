@@ -63,7 +63,7 @@ const maxIdComponent = 50;
 const errorIcon = /*html*/`<i class='fa fa-exclamation-triangle' aria-hidden='true'></i>`;
 const sucessIcon = /*html*/`<i class='fa fa-check-circle' aria-hidden='true'></i>`;
 
-const form_key = {
+this.form_key = {
     init: function (options) {
         const IDS = s4();
         this[IDS] = range(0, maxIdComponent).map(() => 'form_key-' + s4());
@@ -185,7 +185,7 @@ const form_key = {
                             return renderMsgInput(12, renderLang({ es: 'Llaves encontradas', en: 'Found keys' }), true);
                         }
                         console.log('POST SUCCESS - /create-key', res.data);
-                        if(s('table_keys')) htmls('table_keys', table_keys.init());
+                        if (s('table_keys')) htmls('table_keys', table_keys.init());
                         return renderMsgInput(12, renderLang({ es: 'Las llaves han sido creadas', en: 'The keys have been created' }), true);
                     }).catch(error => {
                         console.log('POST ERROR - /create-key', error);
@@ -246,7 +246,7 @@ const form_key = {
 };
 
 
-const table_keys = {
+this.table_keys = {
     getKeys: () => new Promise((resolve, reject) => {
         fetch('/api/keys', {
             method: 'GET',
@@ -302,7 +302,7 @@ const table_keys = {
     }
 };
 
-const main_menu = {
+this.main_menu = {
     init: function () {
         const IDS = s4();
         this[IDS] = range(0, maxIdComponent).map(() => 'main_menu-' + s4());
@@ -311,7 +311,7 @@ const main_menu = {
                 if (s('.' + this[IDS][i])) s('.' + this[IDS][i]).onclick = () => {
                     viewPaths.map((_path, _i) => {
                         if (_path.path != '/') {
-                            if (_path.path != path.path) {
+                            if (_path.path != path.path && !_path.fix) {
                                 s(_path.component).style.display = 'none';
                             } else {
                                 fadeIn(s(_path.component));
@@ -326,8 +326,10 @@ const main_menu = {
                 s('.' + this[IDS][viewPaths.length + 1]).style.display = 'none';
                 fadeIn(s('.' + this[IDS][viewPaths.length]));
                 viewPaths.map((_path, _i) => {
-                    if (_path.path != '/') {
+                    if (!_path.home) {
                         s(_path.component).style.display = 'none';
+                    } else {
+                        fadeIn(s(_path.component));
                     }
                 });
             };
@@ -352,13 +354,10 @@ append('body', /*html*/`
         <div class='in container main-title' style='${borderChar(1, 'yellow')}'>
                KOYN UI
         </div>
-        <main_menu>${main_menu.init()}</main_menu>
-        <form_key>${form_key.init()}</form_key>
-        <form_key_search>${form_key.init({ mode: 'search' })}</form_key_search>
-        <table_keys>${table_keys.init()}</table_keys>
+        ${viewPaths.map(path =>/*html*/`
+        <${path.component}>${this[path.options ? path.options.origin : path.component].init()}</${path.component}>
+        `).join('')}
+       
         
 
 `);
-
-
-//  <table_keys>${table_keys.init()}</table_keys>
