@@ -22,27 +22,27 @@ const viewMetaData = {
 const viewPaths = [
     {
         path: '/',
-        title: '',
+        title: { en:'', es: ''},
         component: 'main_menu',
-        active: false
+        menu: false
     },
     {
         path: '/keys/create',
         title: { en:'Create Key', es: 'Crear Llaves'},
         component: 'form_key',
-        active: true
+        menu: true
     },
     {
         path: '/keys/search',
         title: { en:'Search Key', es: 'Buscar Llave'},
         component: 'form_key_search',
-        active: true
+        menu: true
     },
     {
         path: '/keys/list',
         title: { en:'Keys List', es: 'Listar Llave'},
         component: 'table_keys',
-        active: true
+        menu: true
     }
 ];
 

@@ -118,7 +118,7 @@ const form_key = {
 
             const resetInputs = () => {
                 s('.' + this[IDS][3]).style.display = 'none';
-                fadeIn(s('.' + this[IDS][15]));
+                mode == 'search' ? fadeIn(s('.' + this[IDS][4])) : fadeIn(s('.' + this[IDS][15]));
                 [12, 5, 6, 11].map(errorId => s('.' + this[IDS][errorId]).style.display = 'none');
                 inputValueContent.map((inputId, i) => {
                     s('.' + this[IDS][inputId]).value = '';
@@ -185,7 +185,7 @@ const form_key = {
                             return renderMsgInput(12, renderLang({ es: 'Llaves encontradas', en: 'Found keys' }), true);
                         }
                         console.log('POST SUCCESS - /create-key', res.data);
-                        htmls('table_keys', table_keys.init());
+                        if(s('table_keys')) htmls('table_keys', table_keys.init());
                         return renderMsgInput(12, renderLang({ es: 'Las llaves han sido creadas', en: 'The keys have been created' }), true);
                     }).catch(error => {
                         console.log('POST ERROR - /create-key', error);
@@ -334,7 +334,7 @@ const main_menu = {
         });
         return /*html*/`
                 <div class='in container ${this[IDS][viewPaths.length]}'>
-                ${viewPaths.map((path, i) => path.active ?/*html*/`   
+                ${viewPaths.map((path, i) => path.menu ?/*html*/`   
 
                 <button class='${this[IDS][i]}'>${renderLang(path.title)}</button>    
                  
