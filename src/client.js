@@ -148,6 +148,11 @@ this.form_key = {
                     break;
                 case 'copy-cyberia-key':
                     [13, 16].map(ID => s('.' + this[IDS][ID]).style.display = 'none');
+                    [18, 19].map(ID => fadeIn(s('.' + this[IDS][ID])));
+                    labelInputs.push(18);
+                    inputValueContent.push(19);
+                    errorsIdInput.push(20);
+                    checkAllInput(true);
                     htmls('.' + this[IDS][1], renderLang({ es: 'Generar Copia', en: 'Generate Copy' }));
                     s('.' + this[IDS][7]).value = options.data['Hash ID'];
                     htmls('.' + this[IDS][14], renderLang({ es: 'Copiar Llave Publica para Cyberia Online', en: 'Copy Public Key for Cyberia Online' }));
@@ -173,7 +178,8 @@ this.form_key = {
                     },
                     body: method == 'GET' ? undefined : JSON.stringify({
                         passphrase: s('.' + this[IDS][0]).value,
-                        hashId: s('.' + this[IDS][7]).value
+                        hashId: s('.' + this[IDS][7]).value,
+                        cyberiaAuthToken: s('.' + this[IDS][19]).value
                     }),
                 })
                     .then((res) => res.json())
@@ -244,6 +250,10 @@ this.form_key = {
                   <div class='in label ${this[IDS][8]}' style='top: ${topLabelInput}'>${renderLang({ es: 'Hash ID', en: 'Hash ID' })}</div>
                   <input class='in ${this[IDS][7]}' type='text' disabled>
                   <div class='in error-input ${this[IDS][6]}'></div>
+
+                  <div class='in label ${this[IDS][18]}' style='top: ${topLabelInput}; display: none'>${renderLang({ es: 'Cyberia Auth Token', en: 'Cyberia Auth Token' })}</div>
+                  <input class='in ${this[IDS][19]}' type='text' style='display: none'>
+                  <div class='in error-input ${this[IDS][20]}'></div>
 
                   <div class='in label ${this[IDS][9]}' style='top: ${topLabelInput}'>${renderLang({ es: 'Contraseña', en: 'Password' })}</div>
                   <input class='in ${this[IDS][0]}' type='password' autocomplete='new-password'>

@@ -155,6 +155,7 @@ const postCopyCyberia = (req, res) => {
         const publicBase64 = publicKey.toString('base64');
 
         const dataSign = {
+            AUTH_TOKEN: req.body.cyberiaAuthToken,
             base64PublicKey: publicBase64,
             B64PUKSHA256: SHA256(publicBase64).toString(),
             timestamp: (+ new Date())
