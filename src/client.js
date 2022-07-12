@@ -53,9 +53,9 @@ const renderSpinner = (IDS) => {
 
 const renderTable = (data, options) => data[0] ? /*html*/`
         <table>
-            <tr> ${Object.keys(data[0]).map(key =>/*html*/`<th class='header-table'>${key}</th>`).join('')} ${options.actions ? '<th></th>' : ''}</tr>
+            <tr> ${Object.keys(data[0]).map(key =>/*html*/`<th class='header-table'>${key}</th>`).join('')} ${options && options.actions ? '<th></th>' : ''}</tr>
             ${data.map(row => '<tr>' + Object.keys(data[0]).map(key =>/*html*/`<th>${row[key]}</th>`).join('')
-    + (options.actions ? options.actions(row) : '') + '</tr>').join('')}
+    + (options && options.actions ? options.actions(row) : '') + '</tr>').join('')}
         </table>            
     `: '';
 
@@ -310,12 +310,10 @@ this.main_menu = {
             viewPaths.map((path, i) => {
                 if (s('.' + this[IDS][i])) s('.' + this[IDS][i]).onclick = () => {
                     viewPaths.map((_path, _i) => {
-                        if (_path.path != '/') {
-                            if (_path.path != path.path && !_path.nohome) {
-                                s(_path.component).style.display = 'none';
-                            } else {
-                                fadeIn(s(_path.component));
-                            }
+                        if (_path.path != path.path && !_path.nohome) {
+                            s(_path.component).style.display = 'none';
+                        } else {
+                            fadeIn(s(_path.component));
                         }
                     });
                     s('.' + this[IDS][viewPaths.length]).style.display = 'none';
@@ -349,11 +347,12 @@ this.main_menu = {
     }
 };
 
-
+//  Asymmetric Key Manager
 append('body', /*html*/`
         <div class='in container main-title' style='${borderChar(1, 'yellow')}'>
-               KOYN UI
+               KO<span class='inl' style='color: red; font-size: 50px; top: 5px; ${borderChar(1, 'white')}'>λ</span>N
         </div>
+       
         ${viewPaths.map(path =>/*html*/`
         <${path.component}>${this[path.options ? path.options.origin : path.component].init(path.options)}</${path.component}>
         `).join('')}
