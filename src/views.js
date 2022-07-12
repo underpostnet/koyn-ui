@@ -27,18 +27,18 @@ const viewPaths = [
         component: 'main_menu',
         options: false,
         menu: false,
-        home: true,
-        nohome: true,
-        render: true
+        home: false,
+        nohome: false,
+        render: false
     },
     {
         path: '/keys/create',
         title: { en: 'Create Key', es: 'Crear Llaves' },
         component: 'form_key',
         options: false,
-        menu: true,
-        home: false,
-        nohome: false,
+        menu: false,
+        home: true,
+        nohome: true,
         render: true
     },
     {
@@ -46,9 +46,9 @@ const viewPaths = [
         title: { en: 'Search Key', es: 'Buscar Llave' },
         component: 'form_key_search',
         options: { origin: 'form_key', mode: 'search' },
-        menu: true,
-        home: false,
-        nohome: false,
+        menu: false,
+        home: true,
+        nohome: true,
         render: true
     },
     {
@@ -57,9 +57,9 @@ const viewPaths = [
         component: 'table_keys',
         options: false,
         menu: false,
-        home: true,
-        nohome: true,
-        render: true
+        home: false,
+        nohome: false,
+        render: false
     }
 ];
 
