@@ -417,6 +417,11 @@ this.main_menu = {
 append('body', /*html*/`
         <div class='in container main-title' style='${borderChar(1, 'yellow')}'>
                KO<span class='inl' style='color: red; font-size: 50px; top: 5px; ${borderChar(1, 'white')}'>λ</span>N
+               <br>
+               Wallet
+        </div>
+        <div class='in container'>
+            CyberiaOnline Asymmetric Key Manager
         </div>
         <modal></modal>
         <main>
@@ -424,6 +429,11 @@ append('body', /*html*/`
         <${path.component}>${this[path.options ? path.options.origin : path.component].init(path.options)}</${path.component}>
         `).join('')}
         </main>
+        <footer>
+            <div class='in container' style='text-align: right'>
+                  Developed by <a href='https://underpost.net/'>UNDERpost.net</a>
+            </div> 
+        </footer>
        
         
 
