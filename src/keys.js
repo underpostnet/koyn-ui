@@ -40,7 +40,7 @@ const createKey = (req, res) => {
         // https://restfulapi.net/http-status-codes/
         return res.status(200).json({
             status: 'success',
-            data: [{ "Hash ID": req.body.hashId }]
+            data: [{ 'Hash ID': req.body.hashId }]
         });
     } catch (error) {
         return res.status(500).json({
@@ -59,7 +59,7 @@ const getKeys = (req, res) => {
             status: 'success',
             data: getAllFiles(keyFolder).map(key => {
                 return {
-                    "Hash ID": key.split('\\')[2]
+                    'Hash ID': key.split('\\')[2]
                 }
             }).filter((v, i) => i % 2 == 0)
         })
@@ -82,11 +82,11 @@ const getKey = (req, res) => {
 
         const result = getAllFiles(keyFolder).map(key => {
             return {
-                "Hash ID": key.split('\\')[2]
+                'Hash ID': key.split('\\')[2]
             }
         })
             .filter((v, i) => i % 2 == 0)
-            .find(v => v["Hash ID"] == req.params.hashId);
+            .find(v => v['Hash ID'] == req.params.hashId);
 
         if (result) {
             return res.status(200).json({
@@ -115,9 +115,16 @@ const postCopyCyberia = (req, res) => {
 
         logger.info(req.body);
 
+
+        const publicKey = fs.readFileSync(`./data/keys/${req.body.hashId}/public.pem`, 'utf8');
+        const privateKey = fs.readFileSync(`./data/keys/${req.body.hashId}/private.pem`, 'utf8');
+
         return res.status(200).json({
             status: 'success',
-            data: req.body
+            data: {
+                publicKey,
+                privateKey
+            }
         });
     } catch (error) {
         return res.status(500).json({
