@@ -75,20 +75,20 @@ const getKeys = (req, res) => {
 const getKey = (req, res) => {
     res.setHeader('Content-Type', 'application/json');
     try {
-        
+
         checkKeysFolder();
 
         logger.info(req.params);
-        
+
         const result = getAllFiles(keyFolder).map(key => {
             return {
                 "Hash ID": key.split('\\')[2]
             }
         })
-        .filter((v, i) => i % 2 == 0)
-        .find(v=>v["Hash ID"]==req.params.hashId);
+            .filter((v, i) => i % 2 == 0)
+            .find(v => v["Hash ID"] == req.params.hashId);
 
-        if(result){
+        if (result) {
             return res.status(200).json({
                 status: 'success',
                 data: [result]
@@ -107,9 +107,30 @@ const getKey = (req, res) => {
 
 };
 
+const postCopyCyberia = (req, res) => {
+    res.setHeader('Content-Type', 'application/json');
+    try {
+
+        checkKeysFolder();
+
+        logger.info(req.body);
+
+        return res.status(200).json({
+            status: 'success',
+            data: req.body
+        });
+    } catch (error) {
+        return res.status(500).json({
+            status: 'error',
+            data: error.message,
+        });
+    }
+};
+
 export const keys = app => {
     app.post('/api/keys/create-key', createKey);
     app.get('/api/keys', getKeys);
     app.get('/api/key/:hashId', getKey);
+    app.post('/api/key/copy-cyberia', postCopyCyberia);
     return { createKey, getKeys };
 };

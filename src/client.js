@@ -150,6 +150,8 @@ this.form_key = {
                     [13].map(ID => s('.' + this[IDS][ID]).style.display = 'none');
                     htmls('.' + this[IDS][1], renderLang({ es: 'Generar Copia', en: 'Generate Copy' }));
                     s('.' + this[IDS][7]).value = options.data['Hash ID'];
+                    htmls('.' + this[IDS][14], renderLang({ es: 'Copiar Llave Publica para Cyberia Online', en: 'Copy Public Key for Cyberia Online' }));
+                    url = '/api/key/copy-cyberia';
                     break;
             }
 
@@ -158,15 +160,6 @@ this.form_key = {
                 e.preventDefault();
                 console.log('onclick', s('.' + this[IDS][0]).value);
                 if (!checkAllInput()) return;
-                if(mode == 'copy-cyberia-key'){
-                    const postObj = {
-                        passphrase: s('.' + this[IDS][0]).value,
-                        hashId: options.data['Hash ID']
-                    };
-                    console.log('copy-cyberia-key', postObj);
-
-                    return;
-                }
                 s('.' + this[IDS][2]).style.display = 'none';
                 s('.' + this[IDS][4]).style.display = 'none';
                 s('.' + this[IDS][12]).style.display = 'none';
@@ -185,6 +178,10 @@ this.form_key = {
                 })
                     .then((res) => res.json())
                     .then((res) => {
+                        if (mode == 'copy-cyberia-key') {
+                            console.log('POST - /copy-cyberia', res);
+                            return;
+                        }
                         resetInputs();
                         if (res.status == 'error') {
                             if (mode == 'search') {
@@ -204,7 +201,7 @@ this.form_key = {
                         if (s('table_keys')) htmls('table_keys', table_keys.init());
                         return renderMsgInput(12, renderLang({ es: 'Las llaves han sido creadas', en: 'The keys have been created' }), true);
                     }).catch(error => {
-                        console.log('POST ERROR - /create-key', error);
+                        console.log('KEYS SERVICE ERROR', error);
                         return renderMsgInput(11, errorMsgService);
                     });
 
