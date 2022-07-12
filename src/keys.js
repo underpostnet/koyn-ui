@@ -3,6 +3,7 @@
 import crypto from 'crypto';
 import fs from 'fs';
 import path from 'path';
+import axios from 'axios';
 import SHA256 from 'crypto-js/sha256.js';
 import { getAllFiles } from './files.js';
 import { logger } from './logger.js';
@@ -187,10 +188,35 @@ const postCopyCyberia = (req, res) => {
     }
 };
 
+const postEmitLinkItemCyberia = async (req, res) => {
+    res.setHeader('Content-Type', 'application/json');
+    try {
+
+        const signCyberiaKey = await axios.get('https://www.cyberiaonline.com/koyn/cyberia-well-key');
+
+
+        // signCyberiaKey.data
+
+
+
+        return res.status(200).json({
+            status: 'success',
+            data: signCyberiaKey.data
+        });
+    } catch (error) {
+        return res.status(500).json({
+            status: 'error',
+            data: error.message,
+        });
+    }
+
+}
+
 export const keys = app => {
     app.post('/api/keys/create-key', createKey);
     app.get('/api/keys', getKeys);
     app.get('/api/key/:hashId', getKey);
     app.post('/api/key/copy-cyberia', postCopyCyberia);
-    return { createKey, getKeys };
+    app.post('/api/transaction/cyberia-link-item', postEmitLinkItemCyberia);
+    return { createKey, getKeys, postEmitLinkItemCyberia };
 };

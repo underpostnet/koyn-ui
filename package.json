@@ -27,6 +27,7 @@
     "nodemon": "latest",
     "morgan": "latest",
     "winston": "latest",
-    "crypto-js": "latest"
+    "crypto-js": "latest",
+    "axios": "latest"
   }
 }

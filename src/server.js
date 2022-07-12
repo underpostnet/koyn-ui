@@ -17,8 +17,9 @@ import { tests } from './tests.js';
 
 const viewsInstance = views(app);
 const keysInstance = keys(app);
-const testInstance = tests({
-    viewsInstance, keysInstance
+
+tests({
+    views: viewsInstance, keys: keysInstance
 });
 
 app.listen(port, () => {

@@ -16,21 +16,6 @@ export const tests = tests => {
         }
     };
 
-
-    return;
-    console.log(color.yellow('test keys.getKeys'));
-    tests.keysInstance.getKeys(
-        {},
-        res
-    );
-    return;
-
-    console.log(color.yellow('test keys.createKey'));
-    tests.keysInstance.createKey(
-        {
-            body: { passphrase: 'test', name: 'test' }
-        },
-        res
-    );
+    // tests.keys.postEmitLinkItemCyberia({}, res);
 
 };
