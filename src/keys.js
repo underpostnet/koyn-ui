@@ -2,9 +2,31 @@
 
 import crypto from 'crypto';
 import fs from 'fs';
+import path from 'path';
+import SHA256 from 'crypto-js/sha256.js';
 import { getAllFiles } from './files.js';
 import { logger } from './logger.js';
 const keyFolder = './data/keys';
+
+
+const encryptStringWithRsaPrivateKey = (toEncrypt, relativeOrAbsolutePathToPrivateKey, passphrase) => {
+    const absolutePath = path.resolve(relativeOrAbsolutePathToPrivateKey);
+    const privateKey = fs.readFileSync(absolutePath, 'utf8');
+    const buffer = Buffer.from(toEncrypt);
+    const encrypted = crypto.privateEncrypt({
+        key: privateKey.toString(),
+        passphrase: passphrase,
+    }, buffer);
+    return encrypted.toString('base64');
+};
+
+const decryptStringWithRsaPublicKey = (toDecrypt, relativeOrAbsolutePathtoPublicKey) => {
+    const absolutePath = path.resolve(relativeOrAbsolutePathtoPublicKey);
+    const publicKey = fs.readFileSync(absolutePath, 'utf8');
+    const buffer = Buffer.from(toDecrypt, 'base64');
+    const decrypted = crypto.publicDecrypt(publicKey, buffer);
+    return decrypted.toString('utf8');
+};
 
 const checkKeysFolder = () => {
     if (!fs.existsSync(keyFolder)) fs.mkdirSync(keyFolder);
@@ -116,17 +138,50 @@ const postCopyCyberia = (req, res) => {
         logger.info(req.body);
 
 
-        const publicKey = fs.readFileSync(`./data/keys/${req.body.hashId}/public.pem`, 'utf8');
-        const privateKey = fs.readFileSync(`./data/keys/${req.body.hashId}/private.pem`, 'utf8');
+        const publicDirPem = `./data/keys/${req.body.hashId}/public.pem`;
+        const privateDirPem = `./data/keys/${req.body.hashId}/private.pem`;
+
+        const publicKey = fs.readFileSync(publicDirPem);
+        const privateKey = fs.readFileSync(privateDirPem);
+
+        const publicBase64 = publicKey.toString('base64');
+
+        const dataSign = {
+            base64PublicKey: publicBase64,
+            B64PUKSHA256: SHA256(publicBase64).toString(),
+            timestamp: (+ new Date())
+        };
+
+        /*
+           let validateSign = new Keys().validateDataTempKeyAsymmetricSign(
+                    fileKeyContent.public.base64,
+                    keySignData,
+                    blockChainConfig,
+                    this.charset,
+                    this.mainDir
+                  );
+
+                  if(validateSign===true){
+                    console.log(new Util().jsonSave(keySignData));
+                    new Util().copy(new Keys().
+                      getBase64AsymmetricPublicKeySignFromJSON(keySignData)
+                      */
 
         return res.status(200).json({
             status: 'success',
             data: {
-                publicKey,
-                privateKey
+                data: dataSign,
+                sign: encryptStringWithRsaPrivateKey(
+                    SHA256(
+                        JSON.stringify(dataSign)
+                    ).toString(),
+                    privateDirPem,
+                    req.body.passphrase
+                )
             }
         });
     } catch (error) {
+        logger.error(error);
         return res.status(500).json({
             status: 'error',
             data: error.message,
