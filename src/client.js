@@ -126,7 +126,7 @@ this.form_key = {
                     s('.' + this[IDS][inputId]).value = '';
                     s('.' + this[IDS][labelInputs[i]]).style.top = topLabelInput;
                 });
-                if (mode != 'search') generateIdHashInput();
+                if (mode == 'default') generateIdHashInput();
             };
 
             checkAllInput(true);
@@ -147,7 +147,8 @@ this.form_key = {
                     method = 'GET';
                     break;
                 case 'copy-cyberia-key':
-                    [13, 1].map(ID => s('.' + this[IDS][ID]).style.display = 'none');
+                    [13].map(ID => s('.' + this[IDS][ID]).style.display = 'none');
+                    htmls('.' + this[IDS][1], renderLang({ es: 'Generar Copia', en: 'Generate Copy' }));
                     s('.' + this[IDS][7]).value = options.data['Hash ID'];
                     break;
             }
@@ -157,6 +158,15 @@ this.form_key = {
                 e.preventDefault();
                 console.log('onclick', s('.' + this[IDS][0]).value);
                 if (!checkAllInput()) return;
+                if(mode == 'copy-cyberia-key'){
+                    const postObj = {
+                        passphrase: s('.' + this[IDS][0]).value,
+                        hashId: options.data['Hash ID']
+                    };
+                    console.log('copy-cyberia-key', postObj);
+
+                    return;
+                }
                 s('.' + this[IDS][2]).style.display = 'none';
                 s('.' + this[IDS][4]).style.display = 'none';
                 s('.' + this[IDS][12]).style.display = 'none';
@@ -307,7 +317,6 @@ this.table_keys = {
                     htmls('modal', GLOBAL.form_key.init({
                         mode: 'copy-cyberia-key',
                         buttons: [
-                            /*html*/`<button class='${this[IDS][3]}'>${renderLang({ es: 'Generar Copia', en: 'Generate Copy' })}</button>`,
                             /*html*/`<button class='${this[IDS][2]}'>${renderLang({ es: 'Volver', en: 'Back' })}</button>`
                         ],
                         data: dataObj
