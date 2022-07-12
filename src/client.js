@@ -431,7 +431,13 @@ append('body', /*html*/`
         </main>
         <footer>
             <div class='in container' style='text-align: right'>
-                  Developed by <a href='https://underpost.net/'>UNDERpost.net</a>
+                Source Code
+                <img src='/assets/github.png' class='inl' style='width: 20px; top: 5px'> 
+                <a href='https://github.com/underpostnet/koyn-ui'>GitHub</a>
+                <br>
+                Developed By
+                <img src='/assets/underpost.png' class='inl' style='width: 23px; top: 5px; left: 3px'> 
+                <a href='https://underpost.net/'>UNDERpost.net</a>
             </div> 
         </footer>
        
