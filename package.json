@@ -22,12 +22,19 @@
   "homepage": "https://underpost.net",
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.1.1",
+    "ajv": "^8.11.0",
+    "axios": "latest",
     "chalk": "4.1.2",
-    "express": "latest",
-    "nodemon": "latest",
-    "morgan": "latest",
-    "winston": "latest",
+    "clipboardy": "^3.0.0",
+    "colors": "^1.4.0",
     "crypto-js": "latest",
-    "axios": "latest"
+    "express": "latest",
+    "file-get-contents": "^1.0.0",
+    "morgan": "latest",
+    "node-fetch": "^3.2.8",
+    "nodemon": "latest",
+    "read": "^1.0.7",
+    "shelljs": "latest",
+    "winston": "latest"
   }
 }

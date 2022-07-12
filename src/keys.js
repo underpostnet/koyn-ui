@@ -7,7 +7,48 @@ import axios from 'axios';
 import SHA256 from 'crypto-js/sha256.js';
 import { getAllFiles } from './files.js';
 import { logger } from './logger.js';
+import { BlockChain } from '../underpost.net/underpost-modules-v1/koyn/class/blockChain.js';
 const keyFolder = './data/keys';
+
+
+const instanceStaticChainObj = async () => {
+
+    const blockChainConfig = JSON.parse(fs.readFileSync(
+        '../underpost-data-template/network/blockchain-config.json',
+        'utf8'
+    ));
+
+    const chainObj = new BlockChain({
+        generation: blockChainConfig.constructor.generation,
+        userConfig: {
+            blocksToUndermine: 1,
+            propagateBlock: true,
+            bridgeUrl: blockChainConfig.constructor.userConfig.bridgeUrl,
+            intervalBridgeMonitoring: 1000,
+            zerosConstDifficulty: null,
+            rewardAddress: "",
+            blockChainDataPath: 'data/network/blockchain',
+            // blockChainDataPath: '../data/network/blockchain',
+            // blockChainDataPath: null,
+            maxErrorAttempts: 5,
+            RESTdelay: 1000,
+            charset: 'utf-8',
+            limitMbBlock: blockChainConfig.constructor.limitMbBlock,
+            blockchain: blockChainConfig,
+            dataDir: './',
+            dataFolder: 'data/network',
+            dev: true
+        },
+        validatorMode: true
+    });
+
+    // UPDATE CHAIN WITH BRIDGE
+    await chainObj.setCurrentChain();
+    const chain = chainObj.chain;
+    const validateChain = await chainObj.globalValidateChain(chain);
+
+    return { chainObj, chain, validateChain };
+};
 
 
 const encryptStringWithRsaPrivateKey = (toEncrypt, relativeOrAbsolutePathToPrivateKey, passphrase) => {
@@ -218,5 +259,5 @@ export const keys = app => {
     app.get('/api/key/:hashId', getKey);
     app.post('/api/key/copy-cyberia', postCopyCyberia);
     app.post('/api/transaction/cyberia-link-item', postEmitLinkItemCyberia);
-    return { createKey, getKeys, postEmitLinkItemCyberia };
+    return { createKey, getKeys, postEmitLinkItemCyberia, instanceStaticChainObj };
 };
