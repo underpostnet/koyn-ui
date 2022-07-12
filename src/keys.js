@@ -5,18 +5,18 @@ import fs from 'fs';
 import path from 'path';
 import axios from 'axios';
 import SHA256 from 'crypto-js/sha256.js';
+import colors from 'colors';
 import { getAllFiles } from './files.js';
 import { logger } from './logger.js';
 import { BlockChain } from '../underpost.net/underpost-modules-v1/koyn/class/blockChain.js';
 const keyFolder = './data/keys';
 
+const blockChainConfig = JSON.parse(fs.readFileSync(
+    '../underpost-data-template/network/blockchain-config.json',
+    'utf8'
+));
 
 const instanceStaticChainObj = async () => {
-
-    const blockChainConfig = JSON.parse(fs.readFileSync(
-        '../underpost-data-template/network/blockchain-config.json',
-        'utf8'
-    ));
 
     const chainObj = new BlockChain({
         generation: blockChainConfig.constructor.generation,
@@ -26,7 +26,7 @@ const instanceStaticChainObj = async () => {
             bridgeUrl: blockChainConfig.constructor.userConfig.bridgeUrl,
             intervalBridgeMonitoring: 1000,
             zerosConstDifficulty: null,
-            rewardAddress: "",
+            rewardAddress: '',
             blockChainDataPath: 'data/network/blockchain',
             // blockChainDataPath: '../data/network/blockchain',
             // blockChainDataPath: null,
@@ -82,7 +82,7 @@ const checkKeysFolder = () => {
     if (!fs.existsSync(keyFolder)) fs.mkdirSync(keyFolder);
 };
 
-const generateSignData = (req) => {
+const generateSignData = (req, dataTransaction) => {
 
     const publicDirPem = `./data/keys/${req.body.hashId}/public.pem`;
     const privateDirPem = `./data/keys/${req.body.hashId}/private.pem`;
@@ -99,6 +99,7 @@ const generateSignData = (req) => {
     };
 
     if (req.body.cyberiaAuthToken) dataSign = { AUTH_TOKEN: req.body.cyberiaAuthToken, ...dataSign };
+    if (dataTransaction) dataSign = dataTransaction;
 
     return getBase64AsymmetricPublicKeySignFromJSON({
         data: dataSign,
@@ -234,15 +235,80 @@ const postEmitLinkItemCyberia = async (req, res) => {
     try {
 
         const signCyberiaKey = await axios.get('https://www.cyberiaonline.com/koyn/cyberia-well-key');
-        const signUserKey = generateSignData(req);
 
-        // signCyberiaKey.data
+        const sender = generateSignData(req);
+        const receiver = signCyberiaKey.data;
+
+        const { chainObj, chain, validateChain } = instanceStaticChainObj();
+
+        if (validateChain.global == true) {
+
+            const tempDataTransactions = await axios.get(
+                blockChainConfig.constructor.userConfig.bridgeUrl +
+                '/transactions/' + blockChainConfig.constructor.generation);
+
+            const objAmount = await chainObj.currentAmountCalculator(
+                sender.data.base64PublicKey,
+                false,
+                tempDataTransactions.pool
+            );
+
+            console.log(
+                colors.cyan(' > current total amount sender: ' + objAmount.amount)
+            );
+
+
+            if (req.body.amount > 0 && req.body.amount <= objAmount.amount) {
+
+                console.log('generate transaction');
+
+                const dataTransaction = {
+                    sender: sender,
+                    receiver: receiver,
+                    amount: req.body.amount,
+                    subject: req.body.subject,
+                    createdDate: (+ new Date())
+                };
+
+                console.log(' data transaction ->');
+                console.log(dataTransaction);
+
+                const endObjTransaction = generateSignData(req, dataTransaction);
+
+
+                const endPointTransaction = blockChainConfig.constructor.userConfig.bridgeUrl + '/transactions/'
+                    + blockChainConfig.constructor.generation;
+
+                const postTransactionStatus =
+                    await new Promise((resolve, reject) => axios.post(endPointTransaction, endObjTransaction)
+                        .then(function (response) {
+                            console.log(endPointTransaction, response);
+                            resolve(response);
+                        })
+                        .catch(function (error) {
+                            console.log(endPointTransaction, error);
+                            reject(error);
+                        }));
+
+                console.log('postTransactionStatus ->');
+                console.log(postTransactionStatus);
+                return res.status(200).json({
+                    status: 'success',
+                    data: postTransactionStatus
+                });
 
 
 
-        return res.status(200).json({
-            status: 'success',
-            data: signCyberiaKey.data
+            } else {
+                return res.status(400).json({
+                    status: 'error',
+                    data: 'insufficient or invalid current amount: ' + sender_amount,
+                });
+            }
+        }
+        return res.status(500).json({
+            status: 'error',
+            data: 'invalid blockchain config',
         });
     } catch (error) {
         return res.status(500).json({
