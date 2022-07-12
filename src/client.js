@@ -134,7 +134,7 @@ this.form_key = {
 
             switch (mode) {
                 case 'search':
-                    [13, 9, 0, 5].map(ID => s('.' + this[IDS][ID]).style.display = 'none');
+                    [13, 9, 0, 5, 16].map(ID => s('.' + this[IDS][ID]).style.display = 'none');
                     htmls('.' + this[IDS][1], renderLang({ es: 'Buscar', en: 'Search' }));
                     htmls('.' + this[IDS][14], renderLang({ es: 'Buscar llave Asimetrica', en: 'Search Asymmetric key' }));
                     s('.' + this[IDS][7]).value = '';
@@ -147,7 +147,7 @@ this.form_key = {
                     method = 'GET';
                     break;
                 case 'copy-cyberia-key':
-                    [13].map(ID => s('.' + this[IDS][ID]).style.display = 'none');
+                    [13, 16].map(ID => s('.' + this[IDS][ID]).style.display = 'none');
                     htmls('.' + this[IDS][1], renderLang({ es: 'Generar Copia', en: 'Generate Copy' }));
                     s('.' + this[IDS][7]).value = options.data['Hash ID'];
                     htmls('.' + this[IDS][14], renderLang({ es: 'Copiar Llave Publica para Cyberia Online', en: 'Copy Public Key for Cyberia Online' }));
@@ -217,6 +217,19 @@ this.form_key = {
                 s('.' + this[IDS][15]).style.display = 'none';
                 fadeIn(s('.' + this[IDS][4]));
             };
+            let openKeyConfig = false;
+            s('.' + this[IDS][16]).onclick = e => {
+                e.preventDefault();
+                if (openKeyConfig) {
+                    openKeyConfig = false;
+                    htmls('.' + this[IDS][16], renderLang({ es: 'Ver Configuración', en: 'See Configuration' }));
+                    s('.' + this[IDS][17]).style.display = 'none';
+                } else {
+                    openKeyConfig = true;
+                    htmls('.' + this[IDS][16], renderLang({ es: 'Ocultar Configuración', en: 'Hide Configuration' }));
+                    fadeIn(s('.' + this[IDS][17]));
+                }
+            };
         });
         return /*html*/`
             <div class='in container'>
@@ -235,6 +248,21 @@ this.form_key = {
                   <div class='in label ${this[IDS][9]}' style='top: ${topLabelInput}'>${renderLang({ es: 'Contraseña', en: 'Password' })}</div>
                   <input class='in ${this[IDS][0]}' type='password' autocomplete='new-password'>
                   <div class='in error-input ${this[IDS][5]}'></div>
+
+                  <pre class='in ${this[IDS][17]}' style='display: none'>${JSON.stringify({
+            type: 'rsa',
+            modulusLength: 4096,
+            namedCurve: 'secp256k1',
+            publicKeyEncoding: {
+                type: 'spki',
+                format: 'pem'
+            },
+            privateKeyEncoding: {
+                type: 'pkcs8',
+                format: 'pem',
+                cipher: 'aes-256-cbc'
+            }
+        }, null, 4)}</pre>
                 
                   <button type='submit' class='${this[IDS][1]}'>
                          ${renderLang({ es: 'Crear', en: 'Create' })}
@@ -244,6 +272,9 @@ this.form_key = {
                   </button>
                   <button type='reset' class='${this[IDS][10]}' style='display: none'>
                          ${renderLang({ es: 'Limpiar', en: 'Reset' })}
+                  </button>
+                  <button class='${this[IDS][16]}'>
+                         ${renderLang({ es: 'Ver Configuración', en: 'See Configuration' })}
                   </button>
                   ${options && options.buttons ? options.buttons.join('') : ''}
                   <div class='in error-input ${this[IDS][11]}'></div>
