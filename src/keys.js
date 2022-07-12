@@ -31,14 +31,45 @@ const decryptStringWithRsaPublicKey = (toDecrypt, relativeOrAbsolutePathtoPublic
 
 const getBase64AsymmetricPublicKeySignFromJSON = (data) => {
     return Buffer.from(JSON.stringify(data)).toString('base64');
-}
+};
 
 const getJSONAsymmetricPublicKeySignFromBase64 = (data) => {
     return JSON.parse(Buffer.from(data, 'base64').toString());
-}
+};
 
 const checkKeysFolder = () => {
     if (!fs.existsSync(keyFolder)) fs.mkdirSync(keyFolder);
+};
+
+const generateSignData = (req) => {
+
+    const publicDirPem = `./data/keys/${req.body.hashId}/public.pem`;
+    const privateDirPem = `./data/keys/${req.body.hashId}/private.pem`;
+
+    const publicKey = fs.readFileSync(publicDirPem);
+    const privateKey = fs.readFileSync(privateDirPem);
+
+    const publicBase64 = publicKey.toString('base64');
+
+    let dataSign = {
+        base64PublicKey: publicBase64,
+        B64PUKSHA256: SHA256(publicBase64).toString(),
+        timestamp: (+ new Date())
+    };
+
+    if (req.body.cyberiaAuthToken) dataSign = { AUTH_TOKEN: req.body.cyberiaAuthToken, ...dataSign };
+
+    return getBase64AsymmetricPublicKeySignFromJSON({
+        data: dataSign,
+        sign: encryptStringWithRsaPrivateKey(
+            SHA256(
+                JSON.stringify(dataSign)
+            ).toString(),
+            privateDirPem,
+            req.body.passphrase
+        )
+    })
+
 };
 
 const createKey = (req, res) => {
@@ -141,43 +172,12 @@ const getKey = (req, res) => {
 const postCopyCyberia = (req, res) => {
     res.setHeader('Content-Type', 'application/json');
     try {
-
         checkKeysFolder();
-
         logger.info(req.body);
-
-
-        const publicDirPem = `./data/keys/${req.body.hashId}/public.pem`;
-        const privateDirPem = `./data/keys/${req.body.hashId}/private.pem`;
-
-        const publicKey = fs.readFileSync(publicDirPem);
-        const privateKey = fs.readFileSync(privateDirPem);
-
-        const publicBase64 = publicKey.toString('base64');
-
-        const dataSign = {
-            AUTH_TOKEN: req.body.cyberiaAuthToken,
-            base64PublicKey: publicBase64,
-            B64PUKSHA256: SHA256(publicBase64).toString(),
-            timestamp: (+ new Date())
-        };
-
-
-
         /* validateDataTempKeyAsymmetricSign */
-
         return res.status(200).json({
             status: 'success',
-            data: getBase64AsymmetricPublicKeySignFromJSON({
-                data: dataSign,
-                sign: encryptStringWithRsaPrivateKey(
-                    SHA256(
-                        JSON.stringify(dataSign)
-                    ).toString(),
-                    privateDirPem,
-                    req.body.passphrase
-                )
-            })
+            data: generateSignData(req)
         });
     } catch (error) {
         logger.error(error);
@@ -193,7 +193,7 @@ const postEmitLinkItemCyberia = async (req, res) => {
     try {
 
         const signCyberiaKey = await axios.get('https://www.cyberiaonline.com/koyn/cyberia-well-key');
-
+        const signUserKey = generateSignData(req);
 
         // signCyberiaKey.data
 
