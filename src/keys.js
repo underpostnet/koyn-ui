@@ -28,6 +28,14 @@ const decryptStringWithRsaPublicKey = (toDecrypt, relativeOrAbsolutePathtoPublic
     return decrypted.toString('utf8');
 };
 
+const getBase64AsymmetricPublicKeySignFromJSON = (data) => {
+    return Buffer.from(JSON.stringify(data)).toString('base64');
+}
+
+const getJSONAsymmetricPublicKeySignFromBase64 = (data) => {
+    return JSON.parse(Buffer.from(data, 'base64').toString());
+}
+
 const checkKeysFolder = () => {
     if (!fs.existsSync(keyFolder)) fs.mkdirSync(keyFolder);
 };
@@ -152,24 +160,13 @@ const postCopyCyberia = (req, res) => {
             timestamp: (+ new Date())
         };
 
-        /*
-           let validateSign = new Keys().validateDataTempKeyAsymmetricSign(
-                    fileKeyContent.public.base64,
-                    keySignData,
-                    blockChainConfig,
-                    this.charset,
-                    this.mainDir
-                  );
 
-                  if(validateSign===true){
-                    console.log(new Util().jsonSave(keySignData));
-                    new Util().copy(new Keys().
-                      getBase64AsymmetricPublicKeySignFromJSON(keySignData)
-                      */
+
+        /* validateDataTempKeyAsymmetricSign */
 
         return res.status(200).json({
             status: 'success',
-            data: {
+            data: getBase64AsymmetricPublicKeySignFromJSON({
                 data: dataSign,
                 sign: encryptStringWithRsaPrivateKey(
                     SHA256(
@@ -178,7 +175,7 @@ const postCopyCyberia = (req, res) => {
                     privateDirPem,
                     req.body.passphrase
                 )
-            }
+            })
         });
     } catch (error) {
         logger.error(error);
