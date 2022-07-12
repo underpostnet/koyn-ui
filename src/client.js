@@ -63,6 +63,8 @@ const maxIdComponent = 50;
 const errorIcon = /*html*/`<i class='fa fa-exclamation-triangle' aria-hidden='true'></i>`;
 const sucessIcon = /*html*/`<i class='fa fa-check-circle' aria-hidden='true'></i>`;
 
+const GLOBAL = this;
+
 this.form_key = {
     init: function (options) {
         const IDS = s4();
@@ -74,7 +76,7 @@ this.form_key = {
         let method = 'POST';
         const topLabelInput = '30px';
         const botLabelInput = '0px';
-        const mode = options && options.mode == 'search' ? 'search' : 'default';
+        const mode = options && options.mode ? options.mode : 'default';
 
         setTimeout(() => {
 
@@ -143,6 +145,10 @@ this.form_key = {
                     errorsIdInput = [6];
                     url = '/api/key';
                     method = 'GET';
+                    break;
+                case 'copy-cyberia-key':
+                    [13, 1].map(ID => s('.' + this[IDS][ID]).style.display = 'none');
+                    s('.' + this[IDS][7]).value = options.data['Hash ID'];
                     break;
             }
 
@@ -232,6 +238,7 @@ this.form_key = {
                   <button type='reset' class='${this[IDS][10]}' style='display: none'>
                          ${renderLang({ es: 'Limpiar', en: 'Reset' })}
                   </button>
+                  ${options && options.buttons ? options.buttons.join('') : ''}
                   <div class='in error-input ${this[IDS][11]}'></div>
                 </form>
                 <div class='in ${this[IDS][2]}' style='display: none;'></div>
@@ -291,11 +298,33 @@ this.table_keys = {
         `;
     },
     keysActions: {
-        actions: dataObj => {
+        actions: function (dataObj) {
+            const IDS = s4();
+            this[IDS] = range(0, maxIdComponent).map(() => 'keysActions-' + s4());
+            setTimeout(() => {
+                s('.' + this[IDS][0]).onclick = () => {
+                    console.log('copy cyberia', dataObj);
+                    htmls('modal', GLOBAL.form_key.init({
+                        mode: 'copy-cyberia-key',
+                        buttons: [
+                            /*html*/`<button class='${this[IDS][3]}'>${renderLang({ es: 'Generar Copia', en: 'Generate Copy' })}</button>`,
+                            /*html*/`<button class='${this[IDS][2]}'>${renderLang({ es: 'Volver', en: 'Back' })}</button>`
+                        ],
+                        data: dataObj
+                    }));
+                    s('main').style.display = 'none';
+                    fadeIn(s('modal'));
+                    s('.' + this[IDS][2]).onclick = () => {
+                        s('modal').style.display = 'none';
+                        htmls('modal', '');
+                        fadeIn(s('main'));
+                    }
+                };
+            });
             return /*html*/`
                     <th style='text-align: left'> 
-                         <button>Descargar Archivos Pem</button>
-                         <button>Copiar Llave Publica para Cyberia Online</button>
+                         <button class='${this[IDS][1]}'>${renderLang({ es: 'Descargar Archivos Pem', en: 'Download Pem Files' })}</button>
+                         <button class='${this[IDS][0]}'>${renderLang({ es: 'Copiar Llave Publica para Cyberia Online', en: 'Copy Public Key for Cyberia Online' })}</button>
                     </th>
                 `;
         }
@@ -352,10 +381,12 @@ append('body', /*html*/`
         <div class='in container main-title' style='${borderChar(1, 'yellow')}'>
                KO<span class='inl' style='color: red; font-size: 50px; top: 5px; ${borderChar(1, 'white')}'>λ</span>N
         </div>
-       
+        <modal></modal>
+        <main>
         ${viewPaths.map(path =>/*html*/`
         <${path.component}>${this[path.options ? path.options.origin : path.component].init(path.options)}</${path.component}>
         `).join('')}
+        </main>
        
         
 

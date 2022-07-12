@@ -87,3 +87,7 @@ th {
     text-align: center;
     color: orange;
 }
+
+modal {
+    display: none;
+}

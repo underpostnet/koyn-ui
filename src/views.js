@@ -57,9 +57,9 @@ const viewPaths = [
         component: 'table_keys',
         options: false,
         menu: false,
-        home: false,
-        nohome: false,
-        render: false
+        home: true,
+        nohome: true,
+        render: true
     }
 ];
 
