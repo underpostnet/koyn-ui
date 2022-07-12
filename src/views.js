@@ -11,7 +11,7 @@ const title = 'Koyn UI';
 const viewMetaData = {
     favicon: {
         type: 'image/png',
-        path: '/assets/underpost.png'
+        path: '/assets/favicon.png'
     },
     lang: 'es',
     charset: 'utf-8',
@@ -57,9 +57,9 @@ const viewPaths = [
         component: 'table_keys',
         options: false,
         menu: false,
-        home: false,
-        nohome: false,
-        render: false
+        home: true,
+        nohome: true,
+        render: true
     }
 ];
 
