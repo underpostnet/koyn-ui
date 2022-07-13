@@ -35,6 +35,7 @@
     "nodemon": "latest",
     "read": "^1.0.7",
     "shelljs": "latest",
-    "winston": "latest"
+    "winston": "latest",
+    "dotenv": "latest"
   }
 }

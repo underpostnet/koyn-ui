@@ -1,6 +1,6 @@
 {
   "watch": [
-    "./src", "./data"
+    "./src", "./data", ".env"
   ],
   "ext": "js,json,css",
   "delay": "0",

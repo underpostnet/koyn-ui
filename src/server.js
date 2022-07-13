@@ -3,8 +3,11 @@
 import express from 'express';
 import shell from 'shelljs';
 import fs from 'fs';
+import dotenv from 'dotenv';
 import { morganMiddleware } from './morgan.js';
 import { logger } from './logger.js';
+
+dotenv.config();
 
 [
     'underpost.net',
@@ -20,8 +23,10 @@ import { logger } from './logger.js';
     return;
 });
 
+if (!fs.existsSync(`.env`)) fs.writeFileSync(`.env`, `PORT=5500
+NODE_ENV=development`, 'utf8');
+
 const app = express();
-const port = 5500;
 
 app.use(express.json({ limit: '20MB' }));
 app.use(morganMiddleware);
@@ -37,6 +42,6 @@ tests({
     views: viewsInstance, keys: keysInstance
 });
 
-app.listen(port, () => {
-    logger.info(`Server is running on port ${port}`);
+app.listen(process.env.PORT, () => {
+    logger.info(`Server is running on port ${process.env.PORT}`);
 });
