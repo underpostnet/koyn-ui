@@ -27,7 +27,7 @@
     "chalk": "4.1.2",
     "clean-css": "^5.3.1",
     "clipboardy": "^3.0.0",
-    "colors": "^1.4.0",
+    "colors": "1.4.0",
     "crypto-js": "latest",
     "dotenv": "latest",
     "express": "latest",
