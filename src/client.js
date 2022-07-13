@@ -269,25 +269,25 @@ this.form_key = {
                 <form class='in ${this[IDS][4]}'>
 
                   <div class='in label ${this[IDS][8]}' style='top: ${topLabelInput}'>${renderLang({ es: 'Hash ID', en: 'Hash ID' })}</div>
-                  <input class='in ${this[IDS][7]}' type='text' disabled>
+                  <input class='in ${this[IDS][7]}' type='text' disabled autocomplete='off'>
                   <div class='in error-input ${this[IDS][6]}'></div>
 
                   <div class='in label ${this[IDS][18]}' style='top: ${topLabelInput}; display: none'>${renderLang({ es: 'Cyberia Auth Token', en: 'Cyberia Auth Token' })}</div>
-                  <input class='in ${this[IDS][19]}' type='text' style='display: none'>
+                  <input class='in ${this[IDS][19]}' type='text' style='display: none' autocomplete='off'>
                   <div class='in error-input ${this[IDS][20]}'></div>
 
                 
                   <div class='in label ${this[IDS][21]}' style='top: ${topLabelInput}; display: none'>
                          ${renderLang({ es: 'Token de Transacción', en: 'Transaction Token' })}
                   </div>
-                  <input class='in ${this[IDS][22]}' type='text' style='display: none'>
+                  <input class='in ${this[IDS][22]}' type='text' style='display: none' autocomplete='off'>
                   <div class='in error-input ${this[IDS][23]}'></div>
 
 
                   <div class='in label ${this[IDS][24]}' style='top: ${topLabelInput}; display: none'>
                          ${renderLang({ es: 'Monto', en: 'Amount' })}
                   </div>
-                  <input class='in ${this[IDS][25]}' type='number' style='display: none'>
+                  <input class='in ${this[IDS][25]}' type='number' style='display: none' autocomplete='off'>
                   <div class='in error-input ${this[IDS][26]}'></div>
 
                   <div class='in label ${this[IDS][9]}' style='top: ${topLabelInput}'>${renderLang({ es: 'Contraseña', en: 'Password' })}</div>
