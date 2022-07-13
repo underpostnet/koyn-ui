@@ -28,6 +28,7 @@
     "clipboardy": "^3.0.0",
     "colors": "^1.4.0",
     "crypto-js": "latest",
+    "dotenv": "latest",
     "express": "latest",
     "file-get-contents": "^1.0.0",
     "morgan": "latest",
@@ -35,7 +36,7 @@
     "nodemon": "latest",
     "read": "^1.0.7",
     "shelljs": "latest",
-    "winston": "latest",
-    "dotenv": "latest"
+    "ua-parser-js": "^1.0.2",
+    "winston": "latest"
   }
 }

@@ -6,13 +6,14 @@ import path from 'path';
 import axios from 'axios';
 import SHA256 from 'crypto-js/sha256.js';
 import colors from 'colors';
-import { getAllFiles } from './files.js';
-import { logger } from './logger.js';
-import { BlockChain } from '../underpost.net/underpost-modules-v1/koyn/class/blockChain.js';
+import { getAllFiles } from '../files.js';
+import { logger } from '../logger.js';
+import { BlockChain } from '../../underpost.net/underpost-modules-v1/koyn/class/blockChain.js';
+
 const keyFolder = './data/keys';
 
 const blockChainConfig = JSON.parse(fs.readFileSync(
-    '../underpost-data-template/network/blockchain-config.json',
+    './underpost-data-template/network/blockchain-config.json',
     'utf8'
 ));
 
@@ -78,10 +79,6 @@ const getJSONAsymmetricPublicKeySignFromBase64 = (data) => {
     return JSON.parse(Buffer.from(data, 'base64').toString());
 };
 
-const checkKeysFolder = () => {
-    if (!fs.existsSync(keyFolder)) fs.mkdirSync(keyFolder);
-};
-
 const generateSignData = (req, dataTransaction) => {
 
     const publicDirPem = `./data/keys/${req.body.hashId}/public.pem`;
@@ -134,9 +131,6 @@ const createKey = (req, res) => {
                 }
             });
 
-
-        checkKeysFolder();
-
         fs.mkdirSync(`./data/keys/${req.body.hashId}`);
         fs.writeFileSync(`./data/keys/${req.body.hashId}/public.pem`, publicKey, 'utf8');
         fs.writeFileSync(`./data/keys/${req.body.hashId}/private.pem`, privateKey, 'utf8');
@@ -158,7 +152,7 @@ const createKey = (req, res) => {
 const getKeys = (req, res) => {
     res.setHeader('Content-Type', 'application/json');
     try {
-        checkKeysFolder();
+        
         return res.status(200).json({
             status: 'success',
             data: getAllFiles(keyFolder).map(key => {
@@ -180,7 +174,7 @@ const getKey = (req, res) => {
     res.setHeader('Content-Type', 'application/json');
     try {
 
-        checkKeysFolder();
+        
 
         logger.info(req.params);
 
@@ -214,7 +208,7 @@ const getKey = (req, res) => {
 const postCopyCyberia = (req, res) => {
     res.setHeader('Content-Type', 'application/json');
     try {
-        checkKeysFolder();
+        
         logger.info(req.body);
         /* validateDataTempKeyAsymmetricSign */
         return res.status(200).json({
@@ -335,6 +329,9 @@ const postEmitLinkItemCyberia = async (req, res) => {
 }
 
 export const keys = app => {
+    
+    if (!fs.existsSync(keyFolder)) fs.mkdirSync(keyFolder);
+
     app.post('/api/keys/create-key', createKey);
     app.get('/api/keys', getKeys);
     app.get('/api/key/:hashId', getKey);
