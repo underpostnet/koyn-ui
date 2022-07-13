@@ -3,6 +3,8 @@
 import fs from 'fs';
 import express from 'express';
 import parser from 'ua-parser-js';
+import UglifyJS from 'uglify-js';
+import CleanCSS from 'clean-css';
 import { logger } from './logger.js';
 
 // -------------------------------------------------------------
@@ -77,20 +79,22 @@ const renderView = dataView => /*html*/`
                     <link rel='icon' type='${dataView.favicon.type}' href='${dataView.favicon.path}'>
                     <meta name='viewport' content='initial-scale=1.0, maximum-scale=1.0, user-scalable=0'>
                     <style>
-                        ${fs.readFileSync('./src/client/assets/style/base.css', dataView.charset)}
-                        ${fs.readFileSync('./src/client/assets/style/global.css', dataView.charset)}
-                        ${fs.readFileSync('./src/client/assets/style/spinner.css', dataView.charset)}
-                        ${viewPaths.filter(path => path.render).map(path => !path.home ? path.component + `{ display: none; }` : '').join('')}
+                        ${new CleanCSS().minify(
+                            fs.readFileSync('./src/client/assets/style/base.css', dataView.charset)
+                            + fs.readFileSync('./src/client/assets/style/global.css', dataView.charset)
+                            + fs.readFileSync('./src/client/assets/style/spinner.css', dataView.charset)
+                            + viewPaths.filter(path => path.render).map(path => !path.home ? path.component + `{ display: none; }` : '').join('')
+                        ).styles}
                     </style>
                     <link rel='stylesheet' href='/fontawesome/all.min.css'>
                 </head>
                 <body>                  
                     <script>
-                            (function(){
-                                const viewPaths = JSON.parse('${JSON.stringify(viewPaths.filter(path => path.render))}');
-                                console.log('viewPaths', viewPaths);
-                                ${fs.readFileSync(dataView.router, dataView.charset)}
-                            })();
+                        ${UglifyJS.minify(`(function(){
+                            const viewPaths = JSON.parse('${JSON.stringify(viewPaths.filter(path => path.render))}');
+                            console.log('viewPaths', viewPaths);
+                            ${fs.readFileSync(dataView.router, dataView.charset)}
+                        })()`).code}
                     </script>
                 </body>
             </html>
