@@ -236,10 +236,20 @@ const postEmitLinkItemCyberia = async (req, res) => {
 
         const signCyberiaKey = await axios.get('https://www.cyberiaonline.com/koyn/cyberia-well-key');
 
-        const sender = generateSignData(req);
+        const sender = getJSONAsymmetricPublicKeySignFromBase64(
+            generateSignData(req)
+        );
         const receiver = signCyberiaKey.data;
 
-        const { chainObj, chain, validateChain } = instanceStaticChainObj();
+        logger.info('sender ->');
+        logger.info(sender);
+        logger.info('receiver ->');
+        logger.info(receiver);
+
+        const { chainObj, chain, validateChain } = await instanceStaticChainObj();
+
+        logger.info(req.body);
+        logger.info(validateChain);
 
         if (validateChain.global == true) {
 
@@ -265,7 +275,7 @@ const postEmitLinkItemCyberia = async (req, res) => {
                 const dataTransaction = {
                     sender: sender,
                     receiver: receiver,
-                    amount: req.body.amount,
+                    amount: parseInt(req.body.amount),
                     subject: req.body.subject,
                     createdDate: (+ new Date())
                 };
@@ -273,7 +283,12 @@ const postEmitLinkItemCyberia = async (req, res) => {
                 console.log(' data transaction ->');
                 console.log(dataTransaction);
 
-                const endObjTransaction = generateSignData(req, dataTransaction);
+                const endObjTransaction = getJSONAsymmetricPublicKeySignFromBase64(
+                    generateSignData(req, dataTransaction)
+                );
+
+                logger.info(' endObjTransaction ->');
+                logger.info(endObjTransaction);
 
 
                 const endPointTransaction = blockChainConfig.constructor.userConfig.bridgeUrl + '/transactions/'
@@ -294,7 +309,7 @@ const postEmitLinkItemCyberia = async (req, res) => {
                 console.log(postTransactionStatus);
                 return res.status(200).json({
                     status: 'success',
-                    data: postTransactionStatus
+                    data: postTransactionStatus.data
                 });
 
 

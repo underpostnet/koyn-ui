@@ -72,7 +72,7 @@ this.form_key = {
         let labelInputs = [8, 9];
         let inputValueContent = [7, 0];
         let errorsIdInput = [6, 5];
-        let url = '/api/keys/create-key';
+        let url = () => '/api/keys/create-key';
         let method = 'POST';
         const topLabelInput = '30px';
         const botLabelInput = '0px';
@@ -143,7 +143,7 @@ this.form_key = {
                     labelInputs = [8];
                     inputValueContent = [7];
                     errorsIdInput = [6];
-                    url = '/api/key';
+                    url = () => '/api/key/' + s('.' + this[IDS][7]).value;
                     method = 'GET';
                     break;
                 case 'copy-cyberia-key':
@@ -156,7 +156,22 @@ this.form_key = {
                     htmls('.' + this[IDS][1], renderLang({ es: 'Generar Copia', en: 'Generate Copy' }));
                     s('.' + this[IDS][7]).value = options.data['Hash ID'];
                     htmls('.' + this[IDS][14], renderLang({ es: 'Copiar Llave Publica para Cyberia Online', en: 'Copy Public Key for Cyberia Online' }));
-                    url = '/api/key/copy-cyberia';
+                    url = () => '/api/key/copy-cyberia';
+                    break;
+                case 'link-item-cyberia':
+                    [13, 16].map(ID => s('.' + this[IDS][ID]).style.display = 'none');
+                    [21, 22, 24, 25].map(ID => fadeIn(s('.' + this[IDS][ID])));
+                    labelInputs.push(21);
+                    inputValueContent.push(22);
+                    errorsIdInput.push(23);
+                    labelInputs.push(24);
+                    inputValueContent.push(25);
+                    errorsIdInput.push(26);
+                    checkAllInput(true);
+                    htmls('.' + this[IDS][1], renderLang({ es: 'Transferir', en: 'Transfer' }));
+                    s('.' + this[IDS][7]).value = options.data['Hash ID'];
+                    htmls('.' + this[IDS][14], renderLang({ es: 'Vincular Ítem de Cyberia en LLave Pública', en: 'Link Cyberia Item to Public Key' }));
+                    url = () => '/api/transaction/cyberia-link-item';
                     break;
             }
 
@@ -171,7 +186,7 @@ this.form_key = {
                 fadeIn(s('.' + this[IDS][3]));
                 const errorMsgService =
                     renderLang({ es: 'Error en el Servicio', en: 'Service Error' });
-                fetch(url + (method == 'GET' ? '/' + s('.' + this[IDS][7]).value : ''), {
+                fetch(url(), {
                     method,
                     headers: {
                         'Content-Type': 'application/json',
@@ -179,35 +194,41 @@ this.form_key = {
                     body: method == 'GET' ? undefined : JSON.stringify({
                         passphrase: s('.' + this[IDS][0]).value,
                         hashId: s('.' + this[IDS][7]).value,
-                        cyberiaAuthToken: s('.' + this[IDS][19]).value
+                        cyberiaAuthToken: s('.' + this[IDS][19]).value,
+                        subject: s('.' + this[IDS][22]).value,
+                        amount: s('.' + this[IDS][25]).value
                     }),
                 })
                     .then((res) => res.json())
                     .then((res) => {
                         if (mode == 'copy-cyberia-key') {
-                            console.log('POST - /copy-cyberia', res);
+                            console.log('POST', url(), res);
+                            return;
+                        }
+                        if (mode == 'link-item-cyberia') {
+                            console.log('POST', url(), res);
                             return;
                         }
                         resetInputs();
                         if (res.status == 'error') {
                             if (mode == 'search') {
-                                console.log('GET ERROR - /key', res.data);
+                                console.log('GET ERROR', url(), res.data);
                                 return renderMsgInput(11, renderLang({ es: 'Llaves no encontradas', en: 'Keys not found' }));
                             }
-                            console.log('POST ERROR - /create-key', res.data);
+                            console.log('POST ERROR', url(), res.data);
                             return renderMsgInput(11, errorMsgService);
                         }
                         htmls('.' + this[IDS][2], renderTable(res.data, table_keys.keysActions));
                         fadeIn(s('.' + this[IDS][2]));
                         if (mode == 'search') {
-                            console.log('GET SUCCESS - /key', res.data);
+                            console.log('GET SUCCESS', url(), res.data);
                             return renderMsgInput(12, renderLang({ es: 'Llaves encontradas', en: 'Found keys' }), true);
                         }
-                        console.log('POST SUCCESS - /create-key', res.data);
+                        console.log('POST SUCCESS', url(), res.data);
                         if (s('table_keys')) htmls('table_keys', table_keys.init());
                         return renderMsgInput(12, renderLang({ es: 'Las llaves han sido creadas', en: 'The keys have been created' }), true);
                     }).catch(error => {
-                        console.log('KEYS SERVICE ERROR', error);
+                        console.log('KEYS SERVICE ERROR', url(), error);
                         return renderMsgInput(11, errorMsgService);
                     });
 
@@ -254,6 +275,20 @@ this.form_key = {
                   <div class='in label ${this[IDS][18]}' style='top: ${topLabelInput}; display: none'>${renderLang({ es: 'Cyberia Auth Token', en: 'Cyberia Auth Token' })}</div>
                   <input class='in ${this[IDS][19]}' type='text' style='display: none'>
                   <div class='in error-input ${this[IDS][20]}'></div>
+
+                
+                  <div class='in label ${this[IDS][21]}' style='top: ${topLabelInput}; display: none'>
+                         ${renderLang({ es: 'Token de Transacción', en: 'Transaction Token' })}
+                  </div>
+                  <input class='in ${this[IDS][22]}' type='text' style='display: none'>
+                  <div class='in error-input ${this[IDS][23]}'></div>
+
+
+                  <div class='in label ${this[IDS][24]}' style='top: ${topLabelInput}; display: none'>
+                         ${renderLang({ es: 'Monto', en: 'Amount' })}
+                  </div>
+                  <input class='in ${this[IDS][25]}' type='number' style='display: none'>
+                  <div class='in error-input ${this[IDS][26]}'></div>
 
                   <div class='in label ${this[IDS][9]}' style='top: ${topLabelInput}'>${renderLang({ es: 'Contraseña', en: 'Password' })}</div>
                   <input class='in ${this[IDS][0]}' type='password' autocomplete='new-password'>
@@ -303,7 +338,8 @@ this.form_key = {
 
 this.table_keys = {
     getKeys: () => new Promise((resolve, reject) => {
-        fetch('/api/keys', {
+        const url = () => '/api/keys';
+        fetch(url(), {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -312,13 +348,13 @@ this.table_keys = {
             .then((res) => res.json())
             .then((res) => {
                 if (res.status == 'error') {
-                    console.log('GET ERROR - /keys', res.data);
+                    console.log('GET ERROR', url(), res.data);
                     return reject([]);
                 }
-                console.log('GET SUCCESS - /keys', res.data);
+                console.log('GET SUCCESS', url(), res.data);
                 return resolve(res.data);
             }).catch(error => {
-                console.log('GET ERROR - /keys', error);
+                console.log('GET ERROR', url(), error);
                 return reject([]);
             });
     }),
@@ -348,30 +384,38 @@ this.table_keys = {
     keysActions: {
         actions: function (dataObj) {
             const IDS = s4();
+            const openModalAction = (mode) => {
+                htmls('modal', GLOBAL.form_key.init({
+                    mode,
+                    buttons: [
+                        /*html*/`<button class='${this[IDS][2]}'>${renderLang({ es: 'Volver', en: 'Back' })}</button>`
+                    ],
+                    data: dataObj
+                }));
+                s('main').style.display = 'none';
+                fadeIn(s('modal'));
+                s('.' + this[IDS][2]).onclick = () => {
+                    s('modal').style.display = 'none';
+                    htmls('modal', '');
+                    fadeIn(s('main'));
+                }
+            };
             this[IDS] = range(0, maxIdComponent).map(() => 'keysActions-' + s4());
             setTimeout(() => {
                 s('.' + this[IDS][0]).onclick = () => {
                     console.log('copy cyberia', dataObj);
-                    htmls('modal', GLOBAL.form_key.init({
-                        mode: 'copy-cyberia-key',
-                        buttons: [
-                            /*html*/`<button class='${this[IDS][2]}'>${renderLang({ es: 'Volver', en: 'Back' })}</button>`
-                        ],
-                        data: dataObj
-                    }));
-                    s('main').style.display = 'none';
-                    fadeIn(s('modal'));
-                    s('.' + this[IDS][2]).onclick = () => {
-                        s('modal').style.display = 'none';
-                        htmls('modal', '');
-                        fadeIn(s('main'));
-                    }
+                    openModalAction('copy-cyberia-key');
+                };
+                s('.' + this[IDS][3]).onclick = () => {
+                    console.log('link item cyberia', dataObj);
+                    openModalAction('link-item-cyberia');
                 };
             });
             return /*html*/`
                     <th style='text-align: left'> 
                          <button class='${this[IDS][1]}'>${renderLang({ es: 'Descargar Archivos Pem', en: 'Download Pem Files' })}</button>
                          <button class='${this[IDS][0]}'>${renderLang({ es: 'Copiar Llave Publica para Cyberia Online', en: 'Copy Public Key for Cyberia Online' })}</button>
+                         <button class='${this[IDS][3]}'>${renderLang({ es: 'Vincular Ítem de Cyberia en LLave Pública', en: 'Link Cyberia Item to Public Key' })}</button>
                     </th>
                 `;
         }
