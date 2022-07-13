@@ -7,6 +7,8 @@ import dotenv from 'dotenv';
 import { morganMiddleware } from './morgan.js';
 import { logger } from './logger.js';
 
+if (!fs.existsSync(`.env`)) fs.writeFileSync(`.env`, `PORT=5500
+NODE_ENV=development`, 'utf8');
 dotenv.config();
 
 [
@@ -22,9 +24,6 @@ dotenv.config();
     shell.exec(`git clone https://github.com/underpostnet/${underpostModule}`);
     return;
 });
-
-if (!fs.existsSync(`.env`)) fs.writeFileSync(`.env`, `PORT=5500
-NODE_ENV=development`, 'utf8');
 
 const app = express();
 
