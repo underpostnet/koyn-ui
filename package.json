@@ -32,7 +32,6 @@
     "dotenv": "latest",
     "express": "latest",
     "file-get-contents": "^1.0.0",
-    "javascript-obfuscator": "^4.0.0",
     "morgan": "latest",
     "node-fetch": "^3.2.8",
     "nodemon": "latest",
