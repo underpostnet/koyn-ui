@@ -5,6 +5,7 @@ import express from 'express';
 import parser from 'ua-parser-js';
 import UglifyJS from 'uglify-js';
 import CleanCSS from 'clean-css';
+import JavaScriptObfuscator from 'javascript-obfuscator';
 import { logger } from './logger.js';
 
 // -------------------------------------------------------------
@@ -90,11 +91,11 @@ const renderView = dataView => /*html*/`
                 </head>
                 <body>                  
                     <script>
-                        ${UglifyJS.minify(`(function(){
+                        ${JavaScriptObfuscator.obfuscate(UglifyJS.minify(`(function(){
                             const viewPaths = JSON.parse('${JSON.stringify(viewPaths.filter(path => path.render))}');
                             console.log('viewPaths', viewPaths);
                             ${fs.readFileSync(dataView.router, dataView.charset)}
-                        })()`).code}
+                        })()`).code)._obfuscatedCode}
                     </script>
                 </body>
             </html>
