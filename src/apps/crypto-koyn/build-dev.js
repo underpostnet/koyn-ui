@@ -3,9 +3,11 @@
 import shell from 'shelljs';
 import fs from 'fs';
 
-const custom = () => {
+const buildDev = (app) => {
     if (!fs.existsSync(`.env`)) fs.writeFileSync(`.env`, `PORT=5500
 NODE_ENV=development`, 'utf8');
+
+    if (process.env.NODE_ENV == 'development') return;
 
     [
         'underpost.net',
@@ -22,4 +24,4 @@ NODE_ENV=development`, 'utf8');
     });
 };
 
-export default custom;
+export default buildDev;

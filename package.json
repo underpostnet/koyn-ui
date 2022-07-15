@@ -5,8 +5,8 @@
   "type": "module",
   "main": "./src/server.js",
   "scripts": {
-    "start": "node src/server",
-    "dev": "nodemon src/server"
+    "start": "node src/apps/crypto-koyn/server",
+    "dev": "nodemon src/apps/crypto-koyn/server"
   },
   "repository": {
     "type": "git",

@@ -6,11 +6,32 @@ import path from 'path';
 import axios from 'axios';
 import SHA256 from 'crypto-js/sha256.js';
 import colors from 'colors';
-import { getAllFiles } from '../files.js';
-import { logger } from '../logger.js';
+import { getAllFiles } from '../modules/files.js';
+import { logger } from '../modules/logger.js';
 import { BlockChain } from '../../underpost.net/underpost-modules-v1/koyn/class/blockChain.js';
 
-const keyFolder = './data/keys';
+const apiUri = 'keys';
+
+const keyType = 'rsa';
+
+const keyConfig = passphrase => {
+    return {
+        modulusLength: 4096,
+        namedCurve: 'secp256k1',
+        publicKeyEncoding: {
+            type: 'spki',
+            format: 'pem'
+        },
+        privateKeyEncoding: {
+            type: 'pkcs8',
+            format: 'pem',
+            cipher: 'aes-256-cbc',
+            passphrase
+        }
+    };
+};
+
+const keyFolder = './data/keys/' + keyType + '-' + SHA256(JSON.stringify(keyConfig()));
 
 const blockChainConfig = JSON.parse(fs.readFileSync(
     './underpost-data-template/network/blockchain-config.json',
@@ -81,8 +102,8 @@ const getJSONAsymmetricPublicKeySignFromBase64 = (data) => {
 
 const generateSignData = (req, dataTransaction) => {
 
-    const publicDirPem = `./data/keys/${req.body.hashId}/public.pem`;
-    const privateDirPem = `./data/keys/${req.body.hashId}/private.pem`;
+    const publicDirPem = `${keyFolder}/${req.body.hashId}/public.pem`;
+    const privateDirPem = `${keyFolder}/${req.body.hashId}/private.pem`;
 
     const publicKey = fs.readFileSync(publicDirPem);
     const privateKey = fs.readFileSync(privateDirPem);
@@ -115,25 +136,12 @@ const createKey = (req, res) => {
     res.setHeader('Content-Type', 'application/json');
     try {
 
-        const { publicKey, privateKey } = crypto.generateKeyPairSync('rsa',
-            {
-                modulusLength: 4096,
-                namedCurve: 'secp256k1',
-                publicKeyEncoding: {
-                    type: 'spki',
-                    format: 'pem'
-                },
-                privateKeyEncoding: {
-                    type: 'pkcs8',
-                    format: 'pem',
-                    cipher: 'aes-256-cbc',
-                    passphrase: req.body.passphrase
-                }
-            });
+        const { publicKey, privateKey } = crypto.generateKeyPairSync(keyType,
+            keyConfig(req.body.passphrase));
 
-        fs.mkdirSync(`./data/keys/${req.body.hashId}`);
-        fs.writeFileSync(`./data/keys/${req.body.hashId}/public.pem`, publicKey, 'utf8');
-        fs.writeFileSync(`./data/keys/${req.body.hashId}/private.pem`, privateKey, 'utf8');
+        fs.mkdirSync(`${keyFolder}/${req.body.hashId}`);
+        fs.writeFileSync(`${keyFolder}/${req.body.hashId}/public.pem`, publicKey, 'utf8');
+        fs.writeFileSync(`${keyFolder}/${req.body.hashId}/private.pem`, privateKey, 'utf8');
 
         // https://restfulapi.net/http-status-codes/
         return res.status(200).json({
@@ -152,12 +160,12 @@ const createKey = (req, res) => {
 const getKeys = (req, res) => {
     res.setHeader('Content-Type', 'application/json');
     try {
-        
+
         return res.status(200).json({
             status: 'success',
             data: getAllFiles(keyFolder).map(key => {
                 return {
-                    'Hash ID': key.split('\\')[2]
+                    'Hash ID': key.split('\\')[3]
                 }
             }).filter((v, i) => i % 2 == 0)
         })
@@ -174,13 +182,13 @@ const getKey = (req, res) => {
     res.setHeader('Content-Type', 'application/json');
     try {
 
-        
+
 
         logger.info(req.params);
 
         const result = getAllFiles(keyFolder).map(key => {
             return {
-                'Hash ID': key.split('\\')[2]
+                'Hash ID': key.split('\\')[3]
             }
         })
             .filter((v, i) => i % 2 == 0)
@@ -208,7 +216,7 @@ const getKey = (req, res) => {
 const postCopyCyberia = (req, res) => {
     res.setHeader('Content-Type', 'application/json');
     try {
-        
+
         logger.info(req.body);
         /* validateDataTempKeyAsymmetricSign */
         return res.status(200).json({
@@ -329,13 +337,13 @@ const postEmitLinkItemCyberia = async (req, res) => {
 }
 
 export const keys = app => {
-    
-    if (!fs.existsSync(keyFolder)) fs.mkdirSync(keyFolder);
 
-    app.post('/api/keys/create-key', createKey);
-    app.get('/api/keys', getKeys);
-    app.get('/api/key/:hashId', getKey);
-    app.post('/api/key/copy-cyberia', postCopyCyberia);
-    app.post('/api/transaction/cyberia-link-item', postEmitLinkItemCyberia);
+    if (!fs.existsSync(keyFolder)) fs.mkdirSync(keyFolder, { recursive: true });
+
+    app.post(`/api/${apiUri}/create-key`, createKey);
+    app.get(`/api/${apiUri}`, getKeys);
+    app.get(`/api/${apiUri}/:hashId`, getKey);
+    app.post(`/api/${apiUri}/copy-cyberia`, postCopyCyberia);
+    app.post(`/api/${apiUri}/transaction/cyberia-link-item`, postEmitLinkItemCyberia);
     return { createKey, getKeys, postEmitLinkItemCyberia, instanceStaticChainObj };
 };

@@ -59,11 +59,19 @@ const renderTable = (data, options) => data[0] ? /*html*/`
         </table>            
     `: '';
 
+const copyData = data => new Promise((resolve, reject) => {
+    navigator.clipboard.writeText(data).then(
+        () => resolve(true),
+        () => reject(false)
+    )
+});
+
 const maxIdComponent = 50;
 const errorIcon = /*html*/`<i class='fa fa-exclamation-triangle' aria-hidden='true'></i>`;
 const sucessIcon = /*html*/`<i class='fa fa-check-circle' aria-hidden='true'></i>`;
 
 const GLOBAL = this;
+const uriApi = 'keys';
 
 this.form_key = {
     init: function (options) {
@@ -72,7 +80,7 @@ this.form_key = {
         let labelInputs = [8, 9];
         let inputValueContent = [7, 0];
         let errorsIdInput = [6, 5];
-        let url = () => '/api/keys/create-key';
+        let url = () => `/api/${uriApi}/create-key`;
         let method = 'POST';
         const topLabelInput = '30px';
         const botLabelInput = '0px';
@@ -143,7 +151,7 @@ this.form_key = {
                     labelInputs = [8];
                     inputValueContent = [7];
                     errorsIdInput = [6];
-                    url = () => '/api/key/' + s('.' + this[IDS][7]).value;
+                    url = () => `/api/${uriApi}/` + s('.' + this[IDS][7]).value;
                     method = 'GET';
                     break;
                 case 'copy-cyberia-key':
@@ -156,7 +164,7 @@ this.form_key = {
                     htmls('.' + this[IDS][1], renderLang({ es: 'Generar Copia', en: 'Generate Copy' }));
                     s('.' + this[IDS][7]).value = options.data['Hash ID'];
                     htmls('.' + this[IDS][14], renderLang({ es: 'Copiar Llave Publica para Cyberia Online', en: 'Copy Public Key for Cyberia Online' }));
-                    url = () => '/api/key/copy-cyberia';
+                    url = () => `/api/${uriApi}/copy-cyberia`;
                     break;
                 case 'link-item-cyberia':
                     [13, 16].map(ID => s('.' + this[IDS][ID]).style.display = 'none');
@@ -171,7 +179,7 @@ this.form_key = {
                     htmls('.' + this[IDS][1], renderLang({ es: 'Transferir', en: 'Transfer' }));
                     s('.' + this[IDS][7]).value = options.data['Hash ID'];
                     htmls('.' + this[IDS][14], renderLang({ es: 'Vincular Ítem de Cyberia en LLave Pública', en: 'Link Cyberia Item to Public Key' }));
-                    url = () => '/api/transaction/cyberia-link-item';
+                    url = () => `/api/${uriApi}/transaction/cyberia-link-item`;
                     break;
             }
 
@@ -186,6 +194,7 @@ this.form_key = {
                 fadeIn(s('.' + this[IDS][3]));
                 const errorMsgService =
                     renderLang({ es: 'Error en el Servicio', en: 'Service Error' });
+
                 fetch(url(), {
                     method,
                     headers: {
@@ -199,10 +208,28 @@ this.form_key = {
                         amount: s('.' + this[IDS][25]).value
                     }),
                 })
-                    .then((res) => res.json())
+                    .then((res) => {
+                        console.log(url(), res);
+                        return res.json();
+                    })
                     .then((res) => {
                         if (mode == 'copy-cyberia-key') {
                             console.log('POST', url(), res);
+                            if (res.status == 'success') {
+                                htmls('.' + this[IDS][27], res.data);
+                                fadeIn(s('.' + this[IDS][4]));
+                                fadeIn(s('.' + this[IDS][27]));
+                                fadeIn(s('.' + this[IDS][28]), 'inline-table');
+                                s('.' + this[IDS][3]).style.display = 'none';
+                                s('.' + this[IDS][28]).onclick = e => {
+                                    e.preventDefault();
+                                    copyData(res.data);
+                                    renderMsgInput(12, renderLang({ es: 'Llaves copiadas con exito', en: 'Successfully copied Key' }), true);
+                                };
+                                return s('.' + this[IDS][28]).click();
+                            } else {
+
+                            }
                             return;
                         }
                         if (mode == 'link-item-cyberia') {
@@ -294,6 +321,8 @@ this.form_key = {
                   <input class='in ${this[IDS][0]}' type='password' autocomplete='new-password'>
                   <div class='in error-input ${this[IDS][5]}'></div>
 
+                  <pre class='in ${this[IDS][27]}' style='display: none'></pre>
+
                   <pre class='in ${this[IDS][17]}' style='display: none'>${JSON.stringify({
             type: 'rsa',
             modulusLength: 4096,
@@ -321,10 +350,13 @@ this.form_key = {
                   <button class='${this[IDS][16]}'>
                          ${renderLang({ es: 'Ver Configuración', en: 'See Configuration' })}
                   </button>
+                  <button class='${this[IDS][28]}' style='display: none'>
+                         ${renderLang({ es: 'Copiar', en: 'Copy' })}
+                  </button>
                   ${options && options.buttons ? options.buttons.join('') : ''}
-                  <div class='in error-input ${this[IDS][11]}'></div>
                 </form>
                 <div class='in ${this[IDS][2]}' style='display: none;'></div>
+                <div class='in error-input ${this[IDS][11]}'></div>
                 <div class='in success-input ${this[IDS][12]}'></div>
                 <button type='reset' class='${this[IDS][15]}' style='display: none'>
                     ${renderLang({ es: 'Crear nueva llave', en: 'Create new Key' })}
@@ -338,7 +370,7 @@ this.form_key = {
 
 this.table_keys = {
     getKeys: () => new Promise((resolve, reject) => {
-        const url = () => '/api/keys';
+        const url = () => `/api/${uriApi}`;
         fetch(url(), {
             method: 'GET',
             headers: {
@@ -469,7 +501,7 @@ this.main_menu = {
 
 //  Asymmetric Key Manager
 append('body', /*html*/`
-        <div class='in container main-title' style='${borderChar(1, 'yellow')}'>
+        <div class='in container banner' style='${borderChar(1, 'yellow')}'>
                KO<span class='inl' style='color: red; font-size: 50px; top: 5px; ${borderChar(1, 'white')}'>λ</span>N
                <br>
                Wallet
