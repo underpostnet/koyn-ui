@@ -119,6 +119,18 @@ this.form_key = {
                     htmls('.' + this[IDS][14], renderLang({ es: 'Vincular Ítem de Cyberia en LLave Pública', en: 'Link Cyberia Item to Public Key' }));
                     url = () => `/api/${uriApi}/transaction/cyberia-link-item`;
                     break;
+                case 'copy-cli-key':
+                    [1, 16].map(ID => s('.' + this[IDS][ID]).style.display = 'none');
+                    [28].map(ID => fadeIn(s('.' + this[IDS][ID]), 'inline-table'));
+                    s('.' + this[IDS][7]).value = options.data['Hash ID'];
+                    htmls('.' + this[IDS][14], renderLang({ es: 'Copiar Llaves para CLI', en: 'Copy Keys for CLI' }));
+                    displayHashInput();
+                    s('.' + this[IDS][28]).onclick = e => {
+                        e.preventDefault();
+                        s('.' + this[IDS][1]).click();
+                        // si ya fue obtenido simplemente copiar
+                    };
+                    url = () => `/api/${uriApi}/copy-cli-key`;
             }
 
             s('.' + this[IDS][10]).onclick = e => setTimeout(() => resetInputs());
@@ -151,6 +163,10 @@ this.form_key = {
                         return res.json();
                     })
                     .then((res) => {
+                        if (mode == 'copy-cli-key') {
+                            console.log('POST', url(), res);
+                            return;
+                        }
                         if (mode == 'copy-cyberia-key') {
                             console.log('POST', url(), res);
                             if (res.status == 'success') {
@@ -380,10 +396,14 @@ this.table_keys = {
                     console.log('link item cyberia', dataObj);
                     openModalAction('link-item-cyberia');
                 };
+                s('.' + this[IDS][1]).onclick = () => {
+                    console.log('copy cli key', dataObj);
+                    openModalAction('copy-cli-key');
+                };
             });
             return /*html*/`
                     <th style='text-align: left'> 
-                         <button class='${this[IDS][1]}'>${renderLang({ es: 'Descargar Archivos Pem', en: 'Download Pem Files' })}</button>
+                         <button class='${this[IDS][1]}'>${renderLang({ es: 'Copiar Llaves para CLI', en: 'Copy Keys for CLI' })}</button>
                          <button class='${this[IDS][0]}'>${renderLang({ es: 'Copiar Llave Publica para Cyberia Online', en: 'Copy Public Key for Cyberia Online' })}</button>
                          <button class='${this[IDS][3]}'>${renderLang({ es: 'Vincular Ítem de Cyberia en LLave Pública', en: 'Link Cyberia Item to Public Key' })}</button>
                     </th>

@@ -193,7 +193,7 @@ const getKey = (req, res) => {
 
 
         logger.info(req.params);
-
+        /*
         const result = getAllFiles(keyFolder).map(key => {
             return {
                 'Hash ID': key.split('\\')[3]
@@ -201,11 +201,14 @@ const getKey = (req, res) => {
         })
             .filter((v, i) => i % 2 == 0)
             .find(v => v['Hash ID'] == req.params.hashId);
+        */
+
+        const result = fs.existsSync(keyFolder + '/' + req.params.hashId);
 
         if (result) {
             return res.status(200).json({
                 status: 'success',
-                data: [result]
+                data: [{ 'Hash ID': req.params.hashId }]
             });
         }
         return res.status(400).json({
@@ -342,7 +345,23 @@ const postEmitLinkItemCyberia = async (req, res) => {
         });
     }
 
-}
+};
+
+const copyCliKey = (req, res) => {
+    res.setHeader('Content-Type', 'application/json');
+    try {
+        return res.status(200).json({
+            status: 'success',
+            data: true
+        });
+    } catch (error) {
+        return res.status(500).json({
+            status: 'error',
+            data: error.message,
+        });
+    }
+};
+
 const apiKeys = app => {
     srcFolders.map(srcFolder => !fs.existsSync(srcFolder) ?
         fs.mkdirSync(srcFolder, { recursive: true }) : null);
@@ -352,6 +371,7 @@ const apiKeys = app => {
     app.get(`/api/${uriKeys}/:hashId`, getKey);
     app.post(`/api/${uriKeys}/copy-cyberia`, postCopyCyberia);
     app.post(`/api/${uriKeys}/transaction/cyberia-link-item`, postEmitLinkItemCyberia);
+    app.post(`/api/${uriKeys}/copy-cli-key`, copyCliKey);
 
 };
 
