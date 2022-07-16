@@ -1,8 +1,6 @@
 /node_modules
 /package-lock.json
-/data/*.json
-/data/keys
-/data/network
+/data
 /logs
 /underpost.net
 /underpost-data-template
