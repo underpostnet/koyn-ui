@@ -21,7 +21,7 @@ const viewMetaData = {
 const viewPaths = [
     {
         path: '/',
-        homePath: '/',
+        homePaths: ['/'],
         title: { en: '', es: '' },
         component: 'main_menu',
         options: false,
@@ -32,7 +32,7 @@ const viewPaths = [
     },
     {
         path: '/keys/create',
-        homePath: '/',
+        homePaths: ['/'],
         title: { en: 'Create Key', es: 'Crear Llaves' },
         component: 'form_key',
         options: false,
@@ -43,7 +43,7 @@ const viewPaths = [
     },
     {
         path: '/keys/search',
-        homePath: '/',
+        homePaths: ['/'],
         title: { en: 'Search Key', es: 'Buscar Llave' },
         component: 'form_key_search',
         options: { origin: 'form_key', mode: 'search' },
@@ -54,7 +54,7 @@ const viewPaths = [
     },
     {
         path: '/keys/list',
-        homePath: '/',
+        homePaths: ['/'],
         title: { en: 'Keys List', es: 'Listar Llave' },
         component: 'table_keys',
         options: false,

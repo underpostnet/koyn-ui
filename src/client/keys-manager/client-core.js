@@ -398,32 +398,14 @@ this.main_menu = {
         this[IDS] = range(0, maxIdComponent).map(() => 'main_menu-' + s4());
         setTimeout(() => {
             viewPaths.map((path, i) => {
-                if (s('.' + this[IDS][i])) s('.' + this[IDS][i]).onclick = () => {
-                    viewPaths.map((_path, _i) => {
-                        if (_path.path != path.path && !_path.nohome) {
-                            s(_path.component).style.display = 'none';
-                        } else {
-                            fadeIn(s(_path.component));
-                        }
-                    });
-                    s('.' + this[IDS][viewPaths.length]).style.display = 'none';
-                    fadeIn(s('.' + this[IDS][viewPaths.length + 1]));
-                };
-            });
-            s('.' + this[IDS][viewPaths.length + 2]).onclick = () => {
-                s('.' + this[IDS][viewPaths.length + 1]).style.display = 'none';
-                fadeIn(s('.' + this[IDS][viewPaths.length]));
-                viewPaths.map((_path, _i) => {
-                    if (!_path.home) {
-                        s(_path.component).style.display = 'none';
-                    } else {
-                        fadeIn(s(_path.component));
-                    }
-                });
-            };
-            // if(){
 
-            // }
+                if (s('.' + this[IDS][i])) s('.' + this[IDS][i]).onclick = () => {
+                    console.log('main_menu onclick', path);
+                    return GLOBAL.router({ newPath: path.path });
+                }
+
+            });
+
         });
         return /*html*/`
                 <div class='in container ${this[IDS][viewPaths.length]}'>
@@ -438,6 +420,26 @@ this.main_menu = {
                 </div>
         `
     }
+};
+
+this.router = options => {
+    console.log('INIT ROUTER');
+    viewPaths.map((path, i) => {
+        const testEvalPath = options && options.newPath ? options.newPath : view.path;
+        const testIncludesHome = path.homePaths.includes(testEvalPath);
+        console.log('-------------------------------------');
+        console.log('router options', options);
+        console.log('testEvalPath', testEvalPath);
+        console.log('testIncludesHome', testIncludesHome);
+        if ((path.path == testEvalPath)
+            || (path.home && testIncludesHome)
+            || (path.nohome && (!testIncludesHome))
+        ) {
+            fadeIn(s(path.component));
+        } else {
+            s(path.component).style.display = 'none';
+        }
+    });
 };
 
 //  Asymmetric Key Manager
@@ -471,3 +473,5 @@ append('body', /*html*/`
         
 
 `);
+
+this.router();

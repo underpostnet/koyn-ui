@@ -19,7 +19,7 @@ const renderView = dataView => {
         const viewPaths = JSON.parse('${JSON.stringify(viewPaths.filter(path => path.render))}');
         const view = JSON.parse('${JSON.stringify(view)}');
         const viewMetaData = JSON.parse('${JSON.stringify(viewMetaData)}');
-        console.log('dataView', viewPaths, view, viewMetaData);
+        console.log('dataView', view);
         ${fs.readFileSync(viewMetaData.router, viewMetaData.charset)}
     })()`;
     return /*html*/`
@@ -33,9 +33,7 @@ const renderView = dataView => {
             <style>
                 ${new CleanCSS().minify(cssClientCore
         + viewMetaData.styles.map(dirStyle => fs.readFileSync(dirStyle, viewMetaData.charset)).join('')
-        + viewPaths.filter(path => path.render).map(path =>
-            ((!path.home) && (view.path == path.homePath)) || (!path.nohome && path.path != view.path) ?
-                path.component + `{ display: none; }` : '').join('')
+        + viewPaths.filter(path => path.render).map(path => path.component + `{ display: none; }`).join('')
     ).styles}
             </style>
             <link rel='stylesheet' href='/fontawesome/all.min.css'>
