@@ -33,6 +33,11 @@ const keyConfig = passphrase => {
 };
 
 const keyFolder = './data/keys/' + keyType + '-' + SHA256(JSON.stringify(keyConfig()));
+const srcFolders = [
+    keyFolder,
+    './data/network/blockchain',
+    './data/network/temp/test-key'
+];
 
 const blockChainConfig = JSON.parse(fs.readFileSync(
     './underpost-data-template/network/blockchain-config.json',
@@ -136,7 +141,7 @@ const generateSignData = (req, dataTransaction) => {
 const createKey = (req, res) => {
     res.setHeader('Content-Type', 'application/json');
     try {
-        
+
         req.body.hashId = getHash();
 
         const { publicKey, privateKey } = crypto.generateKeyPairSync(keyType,
@@ -339,8 +344,8 @@ const postEmitLinkItemCyberia = async (req, res) => {
 
 }
 const apiKeys = app => {
-
-    if (!fs.existsSync(keyFolder)) fs.mkdirSync(keyFolder, { recursive: true });
+    srcFolders.map(srcFolder => !fs.existsSync(srcFolder) ?
+        fs.mkdirSync(srcFolder, { recursive: true }) : null);
 
     app.post(`/api/${uriKeys}/create-key`, createKey);
     app.get(`/api/${uriKeys}`, getKeys);
