@@ -443,7 +443,7 @@ this.main_menu = {
 };
 
 this.router = options => {
-    console.log('INIT ROUTER');
+    console.log('INIT ROUTER', options);
     let valid = false;
     const testEvalPath = options && options.newPath ? options.newPath : view.path;
     viewPaths.map((path, i) => {
@@ -455,7 +455,11 @@ this.router = options => {
         // console.log('testIncludesHome', testIncludesHome);
         if (validPath) {
             valid = true;
-            if (testEvalPath != getURI()) setURI(testEvalPath);
+            if (testEvalPath != getURI()) {
+                setURI(testEvalPath);
+                htmls('title', (renderLang(path.title) == '' ? '' : renderLang(path.title) + ' - ')
+                    + viewMetaData.mainTitle);
+            };
         };
         // if (validPath && (testEvalPath != view.path)) setURI(testEvalPath);
         if (validPath

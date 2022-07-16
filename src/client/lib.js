@@ -51,7 +51,11 @@ const copyData = data => new Promise((resolve, reject) =>
 const setURI = (uri, objData, title) =>
     history.pushState(objData, title, uri)
 
-const getURI = () => location.pathname.slice(-1) == '/' ?
-    location.pathname.slice(0, -1) : location.pathname;
+const getURI = () => {
+    const uri = location.pathname.slice(-1) == '/' ?
+        location.pathname.slice(0, -1) : location.pathname;
+    if (uri == '') return '/';
+    return uri;
+};
 
 const GLOBAL = this;

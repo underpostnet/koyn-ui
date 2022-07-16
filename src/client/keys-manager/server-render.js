@@ -25,7 +25,7 @@ const viewPaths = [
         title: { en: '', es: '' },
         component: 'main_menu',
         options: false,
-        menu: false,
+        menu: true,
         home: true,
         nohome: true,
         render: true
