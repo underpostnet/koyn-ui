@@ -315,8 +315,8 @@ const postEmitLinkItemCyberia = async (req, res) => {
                             reject(error);
                         }));
 
-                console.log('postTransactionStatus ->');
-                console.log(postTransactionStatus);
+                // console.log('postTransactionStatus ->');
+                // console.log(postTransactionStatus);
                 return res.status(200).json({
                     status: 'success',
                     data: postTransactionStatus.data
