@@ -424,14 +424,21 @@ this.main_menu = {
 
 this.router = options => {
     console.log('INIT ROUTER');
+    let valid = false;
+    const testEvalPath = options && options.newPath ? options.newPath : view.path;
     viewPaths.map((path, i) => {
-        const testEvalPath = options && options.newPath ? options.newPath : view.path;
         const testIncludesHome = path.homePaths.includes(testEvalPath);
-        console.log('-------------------------------------');
-        console.log('router options', options);
-        console.log('testEvalPath', testEvalPath);
-        console.log('testIncludesHome', testIncludesHome);
-        if ((path.path == testEvalPath)
+        const validPath = path.path == testEvalPath;
+        // console.log('-------------------------------------');
+        // console.log('router options', options);
+        // console.log('testEvalPath', testEvalPath);
+        // console.log('testIncludesHome', testIncludesHome);
+        if (validPath) {
+            valid = true;
+            if (testEvalPath != getURI()) setURI(testEvalPath);
+        };
+        // if (validPath && (testEvalPath != view.path)) setURI(testEvalPath);
+        if (validPath
             || (path.home && testIncludesHome)
             || (path.nohome && (!testIncludesHome))
         ) {
@@ -440,6 +447,7 @@ this.router = options => {
             s(path.component).style.display = 'none';
         }
     });
+    if (!valid) location.href = testEvalPath;
 };
 
 //  Asymmetric Key Manager
@@ -475,3 +483,8 @@ append('body', /*html*/`
 `);
 
 this.router();
+
+// Browser and App
+// navigator button controller
+window.onpopstate = e =>
+    this.router({ newPath: getURI() });
