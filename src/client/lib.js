@@ -14,14 +14,12 @@ const fadeIn = (el, display) => {
     fade();
 };
 
-const borderChar = (px_, color_) => {
-    return `
-	text-shadow: `+ px_ + `px -` + px_ + `px ` + px_ + `px ` + color_ + `,
-							 -`+ px_ + `px ` + px_ + `px ` + px_ + `px ` + color_ + `,
-							 -`+ px_ + `px -` + px_ + `px ` + px_ + `px ` + color_ + `,
-							 `+ px_ + `px ` + px_ + `px ` + px_ + `px ` + color_ + `;
-	`;
-};
+const borderChar = (px, color) => /*html*/`
+text-shadow: ${px}px -${px}px ${px}px ${color},
+                         -${px}px ${px}px ${px}px ${color},
+                         -${px}px -${px}px ${px}px ${color},
+                         ${px}px ${px}px ${px}px ${color};
+`;
 
 const renderLang = langs => {
     if (langs[s('html').lang]) return langs[s('html').lang];
@@ -29,13 +27,11 @@ const renderLang = langs => {
 };
 // s('html').lang = 'en';
 
-const renderSpinner = (IDS) => {
-    return /*html*/`
-        <div class='in ${IDS}' style='text-align: center; display: none;'>
-            <div class='lds-ellipsis'><div></div><div></div><div></div><div></div></div>
-        </div>
-    `
-};
+const renderSpinner = (IDS) => /*html*/`
+<div class='in ${IDS}' style='text-align: center; display: none;'>
+    <div class='lds-ellipsis'><div></div><div></div><div></div><div></div></div>
+</div>
+`;
 
 const renderTable = (data, options) => data[0] ? /*html*/`
         <table>
@@ -45,16 +41,15 @@ const renderTable = (data, options) => data[0] ? /*html*/`
         </table>            
     `: '';
 
-const copyData = data => new Promise((resolve, reject) => {
+const copyData = data => new Promise((resolve, reject) =>
     navigator.clipboard.writeText(data).then(
         () => resolve(true),
         () => reject(false)
     )
-});
+);
 
-const setURI = (uri, objData, title) => {
-    return history.pushState(objData, title, uri);
-}
+const setURI = (uri, objData, title) =>
+    history.pushState(objData, title, uri)
 
 const getURI = () => location.pathname.slice(-1) == '/' ?
     location.pathname.slice(0, -1) : location.pathname;
