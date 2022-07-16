@@ -9,13 +9,14 @@ import { morganMiddleware } from '../../modules/morgan.js';
 import { logger } from '../../modules/logger.js';
 
 // buil dev env
-import buildDev from './build-dev.js';
+import { buildDev } from './build-dev.js';
 // api
-import { keys } from '../../api/keys.js';
-// server client render
-import { views } from '../../modules/views.js';
+import { apiKeys } from '../../api/keys.js';
+import { apiUtil } from '../../api/util.js';
+// server side client render
+import { ssr } from '../../modules/views.js';
 // views
-import keysManager from '../../client/keys-manager/server-render.js';
+import { viewMetaData, viewPaths } from '../../client/keys-manager/server-render.js';
 
 dotenv.config();
 // logger.info(process.env);
@@ -25,8 +26,9 @@ app.use(express.json({ limit: '20MB' }));
 app.use(morganMiddleware);
 
 buildDev(app);
-keys(app);
-views(app, keysManager);
+apiUtil(app);
+apiKeys(app);
+ssr(app, { viewMetaData, viewPaths });
 
 app.listen(process.env.PORT, () => {
     logger.info(`Server is running on port ${process.env.PORT}`);

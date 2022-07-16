@@ -10,7 +10,7 @@ import { getAllFiles } from '../modules/files.js';
 import { logger } from '../modules/logger.js';
 import { BlockChain } from '../../underpost.net/underpost-modules-v1/koyn/class/blockChain.js';
 
-const apiUri = 'keys';
+const uriKeys = 'keys';
 
 const keyType = 'rsa';
 
@@ -335,15 +335,23 @@ const postEmitLinkItemCyberia = async (req, res) => {
     }
 
 }
-
-export const keys = app => {
+const apiKeys = app => {
 
     if (!fs.existsSync(keyFolder)) fs.mkdirSync(keyFolder, { recursive: true });
 
-    app.post(`/api/${apiUri}/create-key`, createKey);
-    app.get(`/api/${apiUri}`, getKeys);
-    app.get(`/api/${apiUri}/:hashId`, getKey);
-    app.post(`/api/${apiUri}/copy-cyberia`, postCopyCyberia);
-    app.post(`/api/${apiUri}/transaction/cyberia-link-item`, postEmitLinkItemCyberia);
-    return { createKey, getKeys, postEmitLinkItemCyberia, instanceStaticChainObj };
+    app.post(`/api/${uriKeys}/create-key`, createKey);
+    app.get(`/api/${uriKeys}`, getKeys);
+    app.get(`/api/${uriKeys}/:hashId`, getKey);
+    app.post(`/api/${uriKeys}/copy-cyberia`, postCopyCyberia);
+    app.post(`/api/${uriKeys}/transaction/cyberia-link-item`, postEmitLinkItemCyberia);
+
+};
+
+export {
+    uriKeys,
+    apiKeys,
+    createKey,
+    getKeys,
+    postEmitLinkItemCyberia,
+    instanceStaticChainObj
 };

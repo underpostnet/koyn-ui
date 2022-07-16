@@ -71,6 +71,6 @@ const logger = winston.createLogger({
     levels,
     format,
     transports,
-})
+});
 
 export { logger };

@@ -5,28 +5,37 @@ import express from 'express';
 import parser from 'ua-parser-js';
 import UglifyJS from 'uglify-js';
 import CleanCSS from 'clean-css';
+import { commonFunctions } from '../api/util.js';
 import { logger } from './logger.js';
 
 const cssClientCore = `html{scroll-behavior:smooth}.fl{position:relative;display:flow-root}.abs,.in{display:block}.fll{float:left}.flr{float:right}.abs{position:absolute}.in,.inl{position:relative}.inl{display:inline-table}.fix{position:fixed;display:block}.center{transform:translate(-50%,-50%);top:50%;left:50%;width:100%;text-align:center}`;
 
+
 const renderView = dataView => {
+    const { view, viewMetaData, viewPaths } = dataView;
     const jsClientCore = `(function(){
-        const viewPaths = JSON.parse('${JSON.stringify(dataView.viewPaths.filter(path => path.render))}');
-        console.log('viewPaths', viewPaths);
-        ${fs.readFileSync(dataView.router, dataView.charset)}
+        ${commonFunctions()}
+        ${fs.readFileSync('./src/client/lib.js', viewMetaData.charset)}
+        const viewPaths = JSON.parse('${JSON.stringify(viewPaths.filter(path => path.render))}');
+        const view = JSON.parse('${JSON.stringify(view)}');
+        const viewMetaData = JSON.parse('${JSON.stringify(viewMetaData)}');
+        console.log('dataView', viewPaths, view, viewMetaData);
+        ${fs.readFileSync(viewMetaData.router, viewMetaData.charset)}
     })()`;
     return /*html*/`
     <!DOCTYPE html>
-    <html dir='${dataView.dir}' lang='${dataView.lang}'>
+    <html dir='${viewMetaData.dir}' lang='${viewMetaData.lang}'>
         <head>
-            <meta charset='${dataView.charset}'>
-            <title> ${dataView.title[dataView.lang] != '' ? dataView.title[dataView.lang] + ' - ' : ''}${dataView.mainTitle} </title>
-            <link rel='icon' type='${dataView.favicon.type}' href='${dataView.favicon.path}'>
+            <meta charset='${viewMetaData.charset}'>
+            <title> ${view.title[viewMetaData.lang] != '' ? view.title[viewMetaData.lang] + ' - ' : ''}${viewMetaData.mainTitle} </title>
+            <link rel='icon' type='${viewMetaData.favicon.type}' href='${viewMetaData.favicon.path}'>
             <meta name='viewport' content='initial-scale=1.0, maximum-scale=1.0, user-scalable=0'>
             <style>
                 ${new CleanCSS().minify(cssClientCore
-        + dataView.viewMetaData.styles.map(dirStyle => fs.readFileSync(dirStyle, dataView.charset)).join('')
-        + dataView.viewPaths.filter(path => path.render).map(path => !path.home ? path.component + `{ display: none; }` : '').join('')
+        + viewMetaData.styles.map(dirStyle => fs.readFileSync(dirStyle, viewMetaData.charset)).join('')
+        + viewPaths.filter(path => path.render).map(path =>
+            ((!path.home) && (view.path == path.homePath)) || (!path.nohome && path.path != view.path) ?
+                path.component + `{ display: none; }` : '').join('')
     ).styles}
             </style>
             <link rel='stylesheet' href='/fontawesome/all.min.css'>
@@ -41,19 +50,11 @@ const renderView = dataView => {
 `;
 };
 
-// -------------------------------------------------------------
-// -------------------------------------------------------------
+const ssr = (app, renderData) => {
 
-export const views = (app, renderData) => {
+    const { viewMetaData, viewPaths } = renderData;
 
-    const {
-        clientID,
-        mainTitle,
-        viewMetaData,
-        viewPaths
-    } = renderData;
-
-    app.use('/assets', express.static(`./src/client/${clientID}/assets`));
+    app.use('/assets', express.static(`./src/client/${viewMetaData.clientID}/assets`));
     app.use('/fontawesome', express.static(`./node_modules/@fortawesome/fontawesome-free/css`));
     app.use('/webfonts', express.static(`./node_modules/@fortawesome/fontawesome-free/webfonts`));
 
@@ -61,8 +62,7 @@ export const views = (app, renderData) => {
         return {
             path: view.path,
             render: renderView({
-                ...view,
-                ...viewMetaData,
+                view,
                 ...renderData
             })
         };
@@ -75,4 +75,10 @@ export const views = (app, renderData) => {
             return res.status(200).end(view.render);
         }));
 
+};
+
+export {
+    ssr,
+    cssClientCore,
+    renderView
 };

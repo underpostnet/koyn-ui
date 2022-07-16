@@ -1,9 +1,8 @@
 
 const clientID = 'keys-manager';
-
-const mainTitle = 'Koyn UI';
-
 const viewMetaData = {
+    clientID,
+    mainTitle: 'Koyn UI',
     favicon: {
         type: 'image/png',
         path: '/assets/favicon.png'
@@ -27,9 +26,9 @@ const viewPaths = [
         component: 'main_menu',
         options: false,
         menu: false,
-        home: false,
-        nohome: false,
-        render: false
+        home: true,
+        nohome: true,
+        render: true
     },
     {
         path: '/keys/create',
@@ -37,9 +36,9 @@ const viewPaths = [
         title: { en: 'Create Key', es: 'Crear Llaves' },
         component: 'form_key',
         options: false,
-        menu: false,
-        home: true,
-        nohome: true,
+        menu: true,
+        home: false,
+        nohome: false,
         render: true
     },
     {
@@ -48,9 +47,9 @@ const viewPaths = [
         title: { en: 'Search Key', es: 'Buscar Llave' },
         component: 'form_key_search',
         options: { origin: 'form_key', mode: 'search' },
-        menu: false,
-        home: true,
-        nohome: true,
+        menu: true,
+        home: false,
+        nohome: false,
         render: true
     },
     {
@@ -59,16 +58,14 @@ const viewPaths = [
         title: { en: 'Keys List', es: 'Listar Llave' },
         component: 'table_keys',
         options: false,
-        menu: false,
-        home: true,
-        nohome: true,
+        menu: true,
+        home: false,
+        nohome: false,
         render: true
     }
 ];
 
-export default {
-    clientID,
-    mainTitle,
+export {
     viewMetaData,
     viewPaths
 };

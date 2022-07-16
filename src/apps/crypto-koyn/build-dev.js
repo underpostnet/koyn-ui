@@ -22,6 +22,12 @@ NODE_ENV=development`, 'utf8');
         shell.exec(`git clone https://github.com/underpostnet/${underpostModule}`);
         return;
     });
+
+    // app.use((req, res, next) => {
+    //     console.log('Middleware:', Date.now());
+    //     next();
+    // });
+
 };
 
-export default buildDev;
+export { buildDev };
