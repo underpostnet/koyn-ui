@@ -52,8 +52,12 @@ this.form_key = {
                 return s('.' + this[IDS][inputId]).oninput();
             }).filter(x => x == false).length === 0;
 
+            const displayHashInput = () => {
+                fadeIn(s('.' + this[IDS][8]));
+                fadeIn(s('.' + this[IDS][7]));
+            };
             const generateIdHashInput = () => {
-                s('.' + this[IDS][7]).value = '????';
+                s('.' + this[IDS][7]).value = getHash();
                 s('.' + this[IDS][7]).oninput();
             };
 
@@ -79,6 +83,7 @@ this.form_key = {
                     s('.' + this[IDS][7]).value = '';
                     s('.' + this[IDS][7]).disabled = false;
                     s('.' + this[IDS][8]).style.top = topLabelInput;
+                    displayHashInput();
                     labelInputs = [8];
                     inputValueContent = [7];
                     errorsIdInput = [6];
@@ -88,6 +93,7 @@ this.form_key = {
                 case 'copy-cyberia-key':
                     [13, 16].map(ID => s('.' + this[IDS][ID]).style.display = 'none');
                     [18, 19].map(ID => fadeIn(s('.' + this[IDS][ID])));
+                    displayHashInput();
                     labelInputs.push(18);
                     inputValueContent.push(19);
                     errorsIdInput.push(20);
@@ -106,6 +112,7 @@ this.form_key = {
                     labelInputs.push(24);
                     inputValueContent.push(25);
                     errorsIdInput.push(26);
+                    displayHashInput();
                     checkAllInput(true);
                     htmls('.' + this[IDS][1], renderLang({ es: 'Transferir', en: 'Transfer' }));
                     s('.' + this[IDS][7]).value = options.data['Hash ID'];
@@ -226,8 +233,8 @@ this.form_key = {
                 </div>
                 <form class='in ${this[IDS][4]}'>
 
-                  <div class='in label ${this[IDS][8]}' style='top: ${topLabelInput}'>${renderLang({ es: 'Hash ID', en: 'Hash ID' })}</div>
-                  <input class='in ${this[IDS][7]}' type='text' disabled autocomplete='off'>
+                  <div class='in label ${this[IDS][8]}' style='top: ${topLabelInput}; display: none'>${renderLang({ es: 'Hash ID', en: 'Hash ID' })}</div>
+                  <input class='in ${this[IDS][7]}' type='text' style='display: none' disabled autocomplete='off'>
                   <div class='in error-input ${this[IDS][6]}'></div>
 
                   <div class='in label ${this[IDS][18]}' style='top: ${topLabelInput}; display: none'>${renderLang({ es: 'Cyberia Auth Token', en: 'Cyberia Auth Token' })}</div>
@@ -272,7 +279,7 @@ this.form_key = {
                   <button type='submit' class='${this[IDS][1]}'>
                          ${renderLang({ es: 'Crear', en: 'Create' })}
                   </button>
-                  <button class='${this[IDS][13]}'>
+                  <button class='${this[IDS][13]}' style='display: none'>
                          ${renderLang({ es: 'Generar Hash ID', en: 'Generate Hash ID' })}
                   </button>
                   <button type='reset' class='${this[IDS][10]}' style='display: none'>

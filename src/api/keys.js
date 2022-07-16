@@ -9,6 +9,7 @@ import colors from 'colors';
 import { getAllFiles } from '../modules/files.js';
 import { logger } from '../modules/logger.js';
 import { BlockChain } from '../../underpost.net/underpost-modules-v1/koyn/class/blockChain.js';
+import { getHash } from './util.js';
 
 const uriKeys = 'keys';
 
@@ -135,6 +136,8 @@ const generateSignData = (req, dataTransaction) => {
 const createKey = (req, res) => {
     res.setHeader('Content-Type', 'application/json');
     try {
+        
+        req.body.hashId = getHash();
 
         const { publicKey, privateKey } = crypto.generateKeyPairSync(keyType,
             keyConfig(req.body.passphrase));

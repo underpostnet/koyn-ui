@@ -23,7 +23,7 @@ app.use(express.json({ limit: '20MB' }));
 app.use(morganMiddleware);
 
 buildDev(app);
-apiUtil(app);
+// apiUtil(app);
 apiKeys(app);
 ssr(app, { viewMetaData, viewPaths });
 
