@@ -2,10 +2,14 @@
 
 import shell from 'shelljs';
 import fs from 'fs';
+import dotenv from 'dotenv';
 
 const buildDev = (app) => {
     if (!fs.existsSync(`.env`)) fs.writeFileSync(`.env`, `PORT=5500
 NODE_ENV=development`, 'utf8');
+
+    dotenv.config();
+    // logger.info(process.env);
 
     if (process.env.NODE_ENV == 'development') return;
 
