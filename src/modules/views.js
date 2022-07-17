@@ -56,7 +56,7 @@ const ssr = (app, renderData) => {
     app.use('/fontawesome', express.static(`./node_modules/@fortawesome/fontawesome-free/css`));
     app.use('/webfonts', express.static(`./node_modules/@fortawesome/fontawesome-free/webfonts`));
 
-    const renders = viewPaths.map(view => {
+    const renders = viewPaths.filter(view => view.render).map(view => {
         return {
             path: view.path,
             render: renderView({
