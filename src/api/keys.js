@@ -349,10 +349,23 @@ const postEmitLinkItemCyberia = async (req, res) => {
 
 const copyCliKey = (req, res) => {
     res.setHeader('Content-Type', 'application/json');
+
+    logger.info(req.body);
+
+    const privateKey = fs.readFileSync(`${keyFolder}/${req.body.hashId}/private.pem`).toString('base64');
+    const publicKey = fs.readFileSync(`${keyFolder}/${req.body.hashId}/public.pem`).toString('base64');
+    try {
+        generateSignData(req);
+    } catch (error) {
+        return res.status(400).json({
+            status: 'error',
+            data: 'invalid passphrase'
+        });
+    }
     try {
         return res.status(200).json({
             status: 'success',
-            data: true
+            data: { privateKey, publicKey }
         });
     } catch (error) {
         return res.status(500).json({
