@@ -72,6 +72,23 @@ this.form_key = {
                 if (mode == 'default') generateIdHashInput();
             };
 
+            const displayCopyData = (res) => {
+                if(typeof res.data === 'object'){
+                    res.data = JSON.stringify(res.data, null, 4);
+                }
+                htmls('.' + this[IDS][27], res.data);
+                fadeIn(s('.' + this[IDS][4]));
+                fadeIn(s('.' + this[IDS][27]));
+                fadeIn(s('.' + this[IDS][28]), 'inline-table');
+                s('.' + this[IDS][3]).style.display = 'none';
+                s('.' + this[IDS][28]).onclick = e => {
+                    e.preventDefault();
+                    copyData(res.data);
+                    renderMsgInput(12, renderLang({ es: 'Llaves copiadas con exito', en: 'Successfully copied Key' }), true);
+                };
+                return s('.' + this[IDS][28]).click();
+            };
+
             checkAllInput(true);
             generateIdHashInput();
 
@@ -165,22 +182,17 @@ this.form_key = {
                     .then((res) => {
                         if (mode == 'copy-cli-key') {
                             console.log('POST', url(), res);
+                            if (res.status == 'success') {
+                                return displayCopyData(res);
+                            } else {
+
+                            }
                             return;
                         }
                         if (mode == 'copy-cyberia-key') {
                             console.log('POST', url(), res);
                             if (res.status == 'success') {
-                                htmls('.' + this[IDS][27], res.data);
-                                fadeIn(s('.' + this[IDS][4]));
-                                fadeIn(s('.' + this[IDS][27]));
-                                fadeIn(s('.' + this[IDS][28]), 'inline-table');
-                                s('.' + this[IDS][3]).style.display = 'none';
-                                s('.' + this[IDS][28]).onclick = e => {
-                                    e.preventDefault();
-                                    copyData(res.data);
-                                    renderMsgInput(12, renderLang({ es: 'Llaves copiadas con exito', en: 'Successfully copied Key' }), true);
-                                };
-                                return s('.' + this[IDS][28]).click();
+                                return displayCopyData(res);
                             } else {
 
                             }
