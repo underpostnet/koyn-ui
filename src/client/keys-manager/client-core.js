@@ -13,7 +13,6 @@ this.form_key = {
         let errorsIdInput = [6, 5];
         let url = () => `/api/${uriApi}/create-key`;
         let method = 'POST';
-        let ui_link_item_cyberia = undefined;
         const topLabelInput = '30px';
         const botLabelInput = '0px';
         const mode = options && options.mode ? options.mode : 'default';
@@ -119,7 +118,6 @@ this.form_key = {
                     s('.' + this[IDS][7]).value = options.data['Hash ID'];
                     htmls('.' + this[IDS][14], renderLang({ es: 'Vincular Ítem de Cyberia en LLave Pública', en: 'Link Cyberia Item to Public Key' }));
                     url = () => `/api/${uriApi}/transaction/cyberia-link-item`;
-                    ui_link_item_cyberia = true;
                     break;
                 case 'copy-cli-key':
                     [1, 16].map(ID => s('.' + this[IDS][ID]).style.display = 'none');
@@ -157,8 +155,7 @@ this.form_key = {
                         hashId: s('.' + this[IDS][7]).value,
                         cyberiaAuthToken: s('.' + this[IDS][19]).value,
                         subject: s('.' + this[IDS][22]).value,
-                        amount: s('.' + this[IDS][25]).value,
-                        ui_link_item_cyberia,
+                        amount: s('.' + this[IDS][25]).value
                     }),
                 })
                     .then((res) => {
