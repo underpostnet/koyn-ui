@@ -305,7 +305,7 @@ const postEmitLinkItemCyberia = async (req, res) => {
 
 
                 const endPointTransaction = blockChainConfig.constructor.userConfig.bridgeUrl + '/transactions/'
-                    + blockChainConfig.constructor.generation;
+                    + blockChainConfig.constructor.generation + '/true';
 
                 const postTransactionStatus =
                     await new Promise((resolve, reject) => axios.post(endPointTransaction, endObjTransaction)
