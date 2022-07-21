@@ -114,7 +114,7 @@ const generateSignData = (req, dataTransaction) => {
     const publicKey = fs.readFileSync(publicDirPem);
     const privateKey = fs.readFileSync(privateDirPem);
 
-    const publicBase64 = publicKey.toString('base64');
+    const publicBase64 = publicKey.toString().replaceAll(/\r/g, '').toString('base64');
 
     let dataSign = {
         base64PublicKey: publicBase64,
