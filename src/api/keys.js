@@ -275,7 +275,7 @@ const postEmitLinkItemCyberia = async (req, res) => {
             const objAmount = await chainObj.currentAmountCalculator(
                 sender.data.base64PublicKey,
                 false,
-                tempDataTransactions.pool
+                tempDataTransactions.data.pool
             );
 
             console.log(
