@@ -40,7 +40,7 @@ const srcFolders = [
 ];
 
 const blockChainConfig = JSON.parse(fs.readFileSync(
-    './underpost-data-template/network/blockchain-config.json',
+    './underpost-data-template/network/blockchain-config.dev.json',
     'utf8'
 ));
 
@@ -65,7 +65,7 @@ const instanceStaticChainObj = async () => {
             blockchain: blockChainConfig,
             dataDir: './',
             dataFolder: 'data/network',
-            dev: true
+            dev: blockChainConfig.constructor.dev
         },
         validatorMode: true
     });
@@ -247,7 +247,9 @@ const postEmitLinkItemCyberia = async (req, res) => {
     res.setHeader('Content-Type', 'application/json');
     try {
 
-        const signCyberiaKey = await axios.get('https://www.cyberiaonline.com/koyn/cyberia-well-key');
+        const signCyberiaKey = await axios.get(
+            blockChainConfig.constructor.userConfig.bridgeUrl + '/cyberia-well-key'
+        );
 
         const sender = getJSONAsymmetricPublicKeySignFromBase64(
             generateSignData(req)
@@ -330,7 +332,7 @@ const postEmitLinkItemCyberia = async (req, res) => {
             } else {
                 return res.status(400).json({
                     status: 'error',
-                    data: 'insufficient or invalid current amount: ' + sender_amount,
+                    data: 'insufficient or invalid current amount: ' + objAmount.amount
                 });
             }
         }

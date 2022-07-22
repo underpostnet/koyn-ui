@@ -2,7 +2,7 @@
   "watch": [
     "./src", "./data", ".env"
   ],
-  "ext": "js,json,css",
+  "ext": "js,css",
   "delay": "0",
   "ignore": [ ]
 }
